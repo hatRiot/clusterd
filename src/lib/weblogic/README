@@ -1,0 +1,9 @@
+WebLogic libs
+============
+
+wlfullclient - Not included by default 
+wlcipher.jar - Not included by default (required for T3S connections) 
+DemoTrust.jks - taken from a 12.1 install, required for SSL
+
+WebLogic is ridiculous and doesn't have a neat HTTP API by default, so we
+need to use WL libraries to invoke enterprise MBeans.

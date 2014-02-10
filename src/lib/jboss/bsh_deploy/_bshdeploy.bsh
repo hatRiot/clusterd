@@ -1,0 +1,13 @@
+import java.io.FileOutputStream;
+import sun.misc.BASE64Decoder;
+
+/*
+ 
+*/
+String war = "[[WDATA]]";
+
+BASE64Decoder decoder = new BASE64Decoder();
+byte[] byteval = decoder.decodeBuffer(war);
+FileOutputStream fs = new FileOutputStream("[[ARCH]]");
+fs.write(byteval);
+fs.close();
