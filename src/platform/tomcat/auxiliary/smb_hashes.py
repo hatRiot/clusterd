@@ -6,8 +6,10 @@ from auxiliary import Auxiliary
 from threading import Thread
 from re import findall
 from collections import OrderedDict
+from time import sleep
 import socket
 import utility
+import state
 
 
 class Auxiliary:
@@ -71,14 +73,14 @@ class Auxiliary:
                                 (fingerengine.options.ip, fingerprint.port), LOG.ERROR)
                 return
         
-        while thread.is_alive():
+        while thread.is_alive(): 
             # spin...
-            pass
+            sleep(1)
 
         if response.status_code != 200:
 
             utility.Msg("Unexpected response: HTTP %d" % response.status_code)
-          
+    
         self._Listen = False
 
     def smb_listener(self):
@@ -89,17 +91,23 @@ class Auxiliary:
             handler = None
             sock = socket.socket()
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sock.settimeout(state.timeout)
             sock.bind(('', 445))
             sock.listen(1)
 
             while self._Listen:
-                (con, addr) = sock.accept()
+                try:
+                    (con, addr) = sock.accept()
+                except:
+                    # timeout
+                    return
+
                 handler = Handler(con, addr)
                 handler.start()
 
                 while handler.is_alive():
                     # spin...
-                    pass
+                    sleep(1)
 
                 if handler.data:
                     utility.Msg("%s" % handler.data, LOG.SUCCESS)
@@ -154,12 +162,16 @@ class Auxiliary:
 
         if response.status_code == 200:
 
-            # all setup, now invoke
-            response = utility.requests_post(base + uri + \
+            try:
+                # all setup, now invoke
+                response = utility.requests_post(base + uri + \
                                         '?org.apache.catalina.filters.CSRF_NONCE=%s' % nonce,
                                         data = data, cookies=cookies[0],
                                         auth=cookies[1])
+            except:
+                # timeout
+                pass
 
             while smb_thread.is_alive():
                 # spin...
-                pass
+                sleep(1) 
