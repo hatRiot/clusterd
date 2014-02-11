@@ -28,7 +28,7 @@ class Auxiliary:
 
         utility.Msg("Attempting to retrieve JBoss info...")
 
-        if fingerprint.version in ["7.0", "7.1"]:
+        if fingerprint.version in ["7.0", "7.1", "8.0"]:
             # JBoss 7.x uses an HTTP API instead of jmx-console/
             return self.run7(fingerengine, fingerprint)
 

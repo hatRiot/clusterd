@@ -5,7 +5,7 @@ from os.path import abspath
 from log import LOG
 import utility
 
-versions = ["7.0", "7.1"]
+versions = ["7.0", "7.1", '8.0']
 title = JINTERFACES.MM
 def deploy(fingerengine, fingerprint):
     """ Deploying WARs to JBoss 7.x is a three stage process.  The first stage

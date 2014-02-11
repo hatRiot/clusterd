@@ -19,14 +19,14 @@ The recommended installation of clusterd is to clone the Github repository
 clusterd features
 ----
 * JBoss
-    - Versions 3.x - 7.x
+    - Versions 3.x - 8.0 
     - Currently supported deployers:
         + /jmx-console/MainDeployer for 3.x, 4.x, and 6.x
         + /jmx-console/DeploymentFileRepository for 3.x, 4.x, and 5.x
         + /web-console/Invoker (MainDeployer) for 3.x, 4.x, and 6.x
         + /web-console/Invoker (BSHDeployer) for 3.x and 4.x
         + /invoker/JMXInvokerServlet for 3.x and 4.x
-        + /management for 7.x
+        + /management for 7.x, 8.x
     - Dump deployed WARs 
     - Fetch host OS information
     - Verb tampering vulnerability (CVE-2010-0738)
