@@ -1,4 +1,5 @@
 from src.platform.jboss.interfaces import JINTERFACES
+from requests import exceptions
 from cprint import FingerPrint
 from log import LOG
 import utility
