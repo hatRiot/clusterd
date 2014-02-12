@@ -26,6 +26,7 @@ clusterd features
         + /web-console/Invoker (MainDeployer) for 3.x, 4.x, and 6.x
         + /web-console/Invoker (BSHDeployer) for 3.x and 4.x
         + /invoker/JMXInvokerServlet for 3.x and 4.x
+        + /invoker/EJBInvokerServlet for 3.x and 4.x
         + /management for 7.x, 8.x
     - Dump deployed WARs 
     - Fetch host OS information

@@ -16,7 +16,8 @@ class JINTERFACES:
     WC = "JBoss Web Console"
     WM = "JBoss Web Manager"
     MM = "JBoss Management"
-    IN = "JBoss JMX Invoker Servlet"
+    JIN = "JBoss JMX Invoker Servlet"
+    EIN = "JBoss EJB Invoker Servlet"
     RMI = "JBoss RMI Interface"
     STS = "JBoss Status Page"
 

@@ -10,7 +10,7 @@ class FPrint(FingerPrint):
     def __init__(self):
         self.platform = "jboss"
         self.version = "Any"
-        self.title = JINTERFACES.IN
+        self.title = JINTERFACES.JIN
         self.uri = "/invoker/JMXInvokerServlet"
         self.port = 8080
         self.hash = "186c0e8a910b87dfd98ae0f746eb4879"
