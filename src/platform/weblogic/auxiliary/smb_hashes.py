@@ -5,8 +5,10 @@ from auxiliary import Auxiliary
 from threading import Thread
 from log import LOG
 from re import findall
+from time import sleep
 import socket
 import utility
+import state
 
 
 class Auxiliary:
@@ -68,7 +70,7 @@ class Auxiliary:
 
         while thread.is_alive():
             # spin
-            pass
+            sleep(1) 
 
         self._Listen = False
 
@@ -94,17 +96,23 @@ class Auxiliary:
             handler = None
             sock = socket.socket()
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sock.settimeout(state.timeout)
             sock.bind(('', 445))
             sock.listen(1)
 
             while self._Listen:
-                (con, addr) = sock.accept()
+                try:
+                    (con, addr) = sock.accept()
+                except:
+                    # timeout
+                    return
+
                 handler = Handler(con, addr)
                 handler.start()
 
                 while handler.is_alive() and self._Listen:
                     # spin...
-                    pass
+                    sleep(1)
 
                 if handler.data:
                     utility.Msg("%s" % handler.data, LOG.SUCCESS)
