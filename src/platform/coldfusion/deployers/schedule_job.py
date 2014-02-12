@@ -108,7 +108,7 @@ def run_task(ip, fingerprint, cfm_path):
     
     uri = "?runtask={0}&timeout=0&csrftoken={1}".format(cfm_name, csrf)
 
-    response = utility.requests_get(url, cookies=cookie)
+    response = utility.requests_get(url + uri, cookies=cookie)
     if waitServe(server_thread):
         utility.Msg("{0} deployed to /CFIDE/{0}".format(cfm_name), LOG.SUCCESS)
 
