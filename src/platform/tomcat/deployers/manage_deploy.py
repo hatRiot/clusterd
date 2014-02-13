@@ -58,8 +58,10 @@ def deploy(fingerengine, fingerprint):
                            (fingerengine.options.ip, fingerprint.port), LOG.ERROR)
             return
 
-    if response.status_code == 200:
+    if response.status_code == 200 and 'Deployed application at' in response.content:
         utility.Msg("Deployed {0} to /{1}".format(war_file, war_path), LOG.SUCCESS)
+    elif 'Application already exists' in response.content:
+        utility.Msg("Application {0} is already deployed.".format(war_file), LOG.ERROR)
     elif response.status_code == 403:
         utility.Msg("This account does not have permissions to remotely deploy.", LOG.ERROR)
     else:
