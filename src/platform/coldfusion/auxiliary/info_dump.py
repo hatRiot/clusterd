@@ -32,7 +32,12 @@ class Auxiliary:
         base = "http://{0}:{1}".format(fingerengine.options.ip, fingerprint.port)
         uri = "/CFIDE/administrator/reports/index.cfm"
 
-        response = utility.requests_get(base + uri)
+        try:
+            response = utility.requests_get(base + uri)
+        except Exception, e:
+            utility.Msg("Failed to fetch info: %s" % e, LOG.ERROR)
+            return
+            
         if response.status_code == 200 and "ColdFusion Administrator Login" \
                                  in response.content:
 

@@ -23,14 +23,17 @@ def _serve(war_file = None):
 
     try:
         if war_file:
-            system("cp %s %s" % (war_file, state.serve_dir))
+            system("cp %s %s 2>/dev/null" % (war_file, state.serve_dir))
 
         proc = Popen(["python", "-m", "SimpleHTTPServer"], stdout=PIPE,
                         stderr=PIPE, cwd=state.serve_dir)
 
         while 'GET' not in proc.stderr.readline():
             sleep(1.0)
-        sleep(1.0)
+
+        # this might be too short for huge files
+        sleep(3.0)
+
     except Exception, e:
         utility.Msg(e, LOG.DEBUG)
     finally:
