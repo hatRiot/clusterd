@@ -66,7 +66,7 @@ def invoke_cf(fingerengine, fingerprint):
     if _invoke(url):
         utility.Msg("{0} invoked at {1}".format(dfile, fingerengine.options.ip))
     else:
-        utility.Msg("Failed to invoke {0}".format(dfile, LOG.ERROR))
+        utility.Msg("Failed to invoke {0}".format(dfile), LOG.ERROR)
 
 
 def _invoke(url):
