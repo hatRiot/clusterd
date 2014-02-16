@@ -31,7 +31,7 @@ def run(options):
 
     if not payload:
         utility.Msg("Platform %s unsupported" % 
-                            fingerengine.options.remote_service, LOG.ERROR)
+                            options.remote_service, LOG.ERROR)
         return
 
     utility.Msg("Generating payload....")
