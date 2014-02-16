@@ -9,7 +9,7 @@ class Auxiliary:
 
     def __init__(self):
         self.name = 'Gather WebLogic info'
-        self.versions = ['Any']
+        self.versions = ["10", "12"]
         self.show = True
         self.flag = 'wl-info'
 
