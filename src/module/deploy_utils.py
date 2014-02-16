@@ -2,9 +2,8 @@ from src.platform.weblogic.interfaces import WINTERFACES
 from time import sleep
 from subprocess import Popen, PIPE, check_output
 from signal import SIGINT
-from os import kill, system, path
+from os import kill, system
 from sys import stdout
-from commands import getoutput
 from log import LOG
 import importlib
 import pkgutil
@@ -123,27 +122,6 @@ def bsh_deploy(arch, url, version, usr = None, pswd = None):
     return res
 
 
-def wlweb_deploy(ip, fingerprint, war, usr, pswd):
-    """ Invoke weblogic's web deployer
-    """
-
-    res = None
-    try:
-        short_war = parse_war_path(war)
-        args = ["./web_deploy.sh", ip, str(fingerprint.port), war, short_war,
-                usr, pswd]
-
-        if fingerprint.title is WINTERFACES.WLS:
-            args.append("ssl")
-
-        res = check_output(args, cwd="./src/lib/weblogic/web_deploy")
-    except Exception, e:
-        utility.Msg(e, LOG.DEBUG)
-        res = e
-
-    return res
-
-
 def deploy_list():
     """ Simple function for dumping all deployers for supported
     platforms.  This lists them in the format INTERFACE (name), where
@@ -185,7 +163,7 @@ def auxiliary_list():
 
             aux = auxiliary[0].find_module(auxiliary[1]).load_module(auxiliary[1]).Auxiliary()
             if not aux.show:
-                utility.Msg("\t%s ([%s] --%s)" % (aux.name, 
+                utility.Msg("\t%s ([%s] --%s)" % (aux.name,
                                             '|'.join(aux.versions), aux.flag))
 
 
@@ -200,15 +178,3 @@ def parse_war_path(war, include_war = False):
         return war
     else:
         return war.split('.')[0]
-
-
-def check_wl_libs():
-    """ Determines if the necessary libraries for WebLogic are in place.
-    Because of redistribution licensing, clusterd cannot be distributed
-    with the necessary WL libs.
-    """
-
-    wpath = "./src/lib/weblogic/wlfullclient.jar"
-    if path.exists(wpath):
-        return True
-    return False

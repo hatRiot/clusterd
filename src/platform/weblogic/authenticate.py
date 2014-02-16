@@ -1,5 +1,4 @@
 from src.platform.weblogic.interfaces import WINTERFACES
-from subprocess import check_output, CalledProcessError
 from requests.utils import dict_from_cookiejar
 from sys import stdout
 from log import LOG
@@ -11,7 +10,7 @@ default_credentials = [('weblogic', 'weblogic'),
                        ('weblogic', 'weblogic1')
                       ]
 
-def _authCookie(usr, pswd, ip, fingerprint):
+def _auth(usr, pswd, ip, fingerprint):
     """ Authenticate to j_security_check and return the cookie
     """
 
@@ -23,6 +22,9 @@ def _authCookie(usr, pswd, ip, fingerprint):
                  "j_password" : pswd,
                  "j_character_encoding" : "UTF-8"
                }
+
+        if fingerprint.title is WINTERFACES.WLS:
+            base = base.replace("http", "https")
 
         response = utility.requests_post(base + uri, data=data)
         if len(response.history) > 1:
@@ -41,36 +43,6 @@ def _authCookie(usr, pswd, ip, fingerprint):
     return False 
 
 
-def _auth(usr, pswd, ip, fingerprint):
-    """ Runs our checkauth.sh script in order to determine whether or not
-    the given credentials are valid.  This simply runs the VERSION command
-    using weblogic.Admin.
-
-    Return is True for success or False for fail.
-    """
-
-    result = False
-
-    try:
-        args = ["./checkauth.sh", ip, str(fingerprint.port), usr, pswd]
-        if fingerprint.title is WINTERFACES.WLS:
-            args.append("ssl")
-
-        res = check_output(args, cwd="./src/lib/weblogic/checkauth")
-        if type(res) is str and "WebLogic" in res:
-            result = True
-
-    except CalledProcessError, e:
-        if "BAD_CERTIFICATE" in e.output:
-            utility.Msg("BAD_CERTIFICATE error", LOG.DEBUG)    
-        result = False
-    except Exception, e:
-        utility.Msg(e, LOG.DEBUG)
-        result = False
-
-    return result
-
-
 def checkAuth(ip, fingerprint, returnCookie = False):
     """ Default behavior is to simply return True/False based on
     whether or not authentication with the credentials was successful.
@@ -80,23 +52,19 @@ def checkAuth(ip, fingerprint, returnCookie = False):
     (None, None) is returned.
     """
 
-    rauth = _auth
-    if returnCookie:
-       rauth = _authCookie
-
     # check with given auth
     if state.usr_auth:
         (usr, pswd) = state.usr_auth.split(':')
-        auth = rauth(usr, pswd, ip, fingerprint)
+        auth = _auth(usr, pswd, ip, fingerprint)
         if auth:
-            return auth if returnCookie else (usr, pswd) 
+            return auth
 
     # else try default credentials
     for (usr, pswd) in default_credentials:
 
-        auth = rauth(usr, pswd, ip, fingerprint)
+        auth = _auth(usr, pswd, ip, fingerprint)
         if auth:
-            return auth if returnCookie else (usr, pswd)
+            return auth
 
     # if we're still here, lets check for a wordlist
     if state.bf_wordlist and not state.hasbf:
@@ -128,7 +96,7 @@ def checkAuth(ip, fingerprint, returnCookie = False):
                                 % (utility.timestamp(), state.bf_user,
                                    idx+1, len(wordlist)))
 
-                auth = rauth(state.bf_user, word, ip, fingerprint)
+                auth = _auth(state.bf_user, word, ip, fingerprint)
                 if auth:
                     print ''
 
@@ -138,7 +106,7 @@ def checkAuth(ip, fingerprint, returnCookie = False):
 
                     utility.Msg("Successful login %s:%s" % 
                                     (state.bf_user, word), LOG.SUCCESS)
-                    return auth if returnCookie else (state.bf_user, word)
+                    return auth
 
             print ''
 

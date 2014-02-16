@@ -1,14 +1,11 @@
-from src.platform.weblogic.interfaces import WINTERFACES
 from src.platform.weblogic.authenticate import checkAuth
+from src.platform.weblogic.interfaces import WINTERFACES
 from auxiliary import Auxiliary
 from log import LOG
-from subprocess import check_output
+from re import findall
 import utility
 
-
 class Auxiliary:
-    """ Obtain a list of the deployed applications
-    """
 
     def __init__(self):
         self.name = 'List deployed apps'
@@ -20,34 +17,26 @@ class Auxiliary:
         return True
 
     def run(self, fingerengine, fingerprint):
-
-        (usr, pswd) = checkAuth(fingerengine.options.ip, fingerprint)
-        if not usr or not pswd:
+        
+        cookies = checkAuth(fingerengine.options.ip, fingerprint)
+        if not cookies[0]:
             utility.Msg("This module requires valid credentials.", LOG.ERROR)
             return
 
         utility.Msg("Obtaining deployed applications...")
 
-        try:
-            args = ["./list_apps.sh", fingerengine.options.ip, 
-                    str(fingerprint.port), usr, pswd]
-            if fingerprint.title is WINTERFACES.WLS:
-                args.append('ssl')
+        base = "http://{0}:{1}".format(fingerengine.options.ip, fingerprint.port)
+        uri = "/console/console.portal?_nfpb=true&_pageLabel=AppDeploymentsControlPage"
 
-            res = check_output(args, cwd='./src/lib/weblogic/list_apps')
-            if type(res) is str:
-                if "There is no application to list" in res:
-                    utility.Msg("No applications found deployed.")
-                else:
-                    output = res.split('\n')[1:-2]
-                    for app in output:
-                        if "<Notice>" in app:
-                            continue
+        if fingerprint.title is WINTERFACES.WLS:
+            base = base.replace("http", "https")
 
-                        utility.Msg("App found: %s" % app.lstrip())
+        response = utility.requests_get(base + uri, cookies=cookies[0])
+        if response.status_code == 200:
+
+            data = findall(r"title=\"Select (.*?)\"", response.content)
+            if len(data) > 0:
+                for entry in data:
+                   utility.Msg("App found: %s" % entry)
             else:
-                utility.Msg("Error fetching applications", LOG.ERROR)
-                utility.Msg(res.output, LOG.DEBUG)
-
-        except Exception, e:
-            utility.Msg(e, LOG.DEBUG)
+                utility.Msg("No applications found.")
