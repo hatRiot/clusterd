@@ -13,7 +13,7 @@ def invoke(fingerengine, fingerprint):
 
     elif fingerengine.service in ["coldfusion"]:
         return invoke_cf(fingerengine, fingerprint)
-    
+
     else:
         utility.Msg("Platform %s does not support --invoke" % 
                             fingerengine.options.remote_service, LOG.ERROR)
@@ -44,8 +44,8 @@ def invoke_war(fingerengine, fingerprint):
     if _invoke(url): 
         utility.Msg("{0} invoked at {1}".format(dfile, fingerengine.options.ip))
     else:
-        utility.Msg("Failed to invoke {0}".format(parse_war_path(dfile, True),
-                                                  LOG.ERROR))
+        utility.Msg("Failed to invoke {0}".format(parse_war_path(dfile, True)),
+                                                  LOG.ERROR)
 
 
 def invoke_cf(fingerengine, fingerprint):
@@ -78,8 +78,6 @@ def _invoke(url):
         response = utility.requests_get(url)
         if response.status_code == 200:
             status = True
-        else:
-            utility.Msg("Failed to invoke (HTTP %d)" % response.status_code)
     except Exception, e:
         utility.Msg("Failed to invoke payload: %s" % e, LOG.ERROR)
         status = False
