@@ -160,8 +160,13 @@ def auxiliary_list():
             continue
 
         for auxiliary in modules:
+            
+            try:
+                aux = auxiliary[0].find_module(auxiliary[1]).load_module(auxiliary[1]).Auxiliary()
+            except:
+                utility.Msg("Could not load auxiliary module '%s'" % 
+                                            auxiliary[1], LOG.DEBUG)
 
-            aux = auxiliary[0].find_module(auxiliary[1]).load_module(auxiliary[1]).Auxiliary()
             if not aux.show:
                 utility.Msg("\t%s ([%s] --%s)" % (aux.name,
                                             '|'.join(aux.versions), aux.flag))
