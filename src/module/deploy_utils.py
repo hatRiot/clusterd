@@ -142,6 +142,7 @@ def deploy_list():
         for deployer in modules:
 
             dp = deployer[0].find_module(deployer[1]).load_module(deployer[1])
+            if 'Any' in dp.versions: dp.versions.remove("Any") # used for FP only
             utility.Msg("\t%s (%s [%s])" % (dp.title, deployer[1], '|'.join(dp.versions)))
 
 
