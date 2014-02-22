@@ -21,13 +21,14 @@ def run(options):
         return
     elif options.remote_service in ["coldfusion"]:
         out = "R > shell.jsp"
+    else:
+        out = "W > shell.war"
 
     if getoutput("which msfpayload") == "":
         utility.Msg("This option requires msfpayload", LOG.ERROR)
         return
 
     payload = fetch_payload(options)
-    out = "W > shell.war"
 
     if not payload:
         utility.Msg("Platform %s unsupported" % 

