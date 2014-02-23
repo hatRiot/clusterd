@@ -10,7 +10,7 @@ class Auxiliary:
 
     def __init__(self):
         self.name = 'Dump host information'
-        self.versions = ['8.0', '9.0', '10.0']
+        self.versions = ['7.0', '8.0', '9.0', '10.0']
         self.show = True
         self.flag = 'cf-info'
 
@@ -31,6 +31,9 @@ class Auxiliary:
 
         base = "http://{0}:{1}".format(fingerengine.options.ip, fingerprint.port)
         uri = "/CFIDE/administrator/reports/index.cfm"
+
+        if fingerprint.version in ["7.0"]:
+            uri = '/CFIDE/administrator/settings/version.cfm'
 
         try:
             response = utility.requests_get(base + uri)
@@ -54,14 +57,25 @@ class Auxiliary:
                 return
 
         if response.status_code == 200:
-            
-            types = findall("<td scope=row nowrap class=\"cell3BlueSides\">(.*?)</td>",
-                            response.content.translate(None, "\n\t\r"))
-            data = findall("<td scope=row class=\"cellRightAndBottomBlueSide\">(.*?)</td>",
-                            response.content.translate(None, "\n\t\r"))
+           
+            regex = self.versionRegex(fingerprint.version)
+            types = findall(regex[0], response.content.translate(None, "\n\t\r"))
+            data = findall(regex[1], response.content.translate(None, "\n\t\r"))
  
-            # pad 
-            types.insert(0, "Version")
+            # pad
+            if fingerprint.version in ["8.0", "9.0", "10.0"]:
+                types.insert(0, "Version")
 
             for (row, data) in zip(types, data)[:26]:
                utility.Msg('  %s: %s' % (row, data[:-7]))
+
+    def versionRegex(self, version):
+        """
+        """
+
+        if version in ["7.0"]:
+            return ["<td nowrap class=\"cell3BlueSides\">(.*?)</td>",
+                    "<td nowrap class=\"cellRightAndBottomBlueSide\">(.*?)</td>"]
+        else:
+            return ["<td scope=row nowrap class=\"cell3BlueSides\">(.*?)</td>",
+                    "<td scope=row class=\"cellRightAndBottomBlueSide\">(.*?)</td>"]

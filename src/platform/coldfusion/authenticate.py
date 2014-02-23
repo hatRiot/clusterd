@@ -27,7 +27,7 @@ def _auth(usr, pswd, url, version):
     """ Authenticate to the remote ColdFusion server; bit of a pain 
     """
 
-    if version in ['8.0', '9.0']:
+    if version in ['7.0', '8.0', '9.0']:
         salt = _salt(url) 
         hsh = hmac.new(salt, sha1(pswd).hexdigest().upper(), sha1).hexdigest().upper()
         data = {"cfadminPassword" : hsh,

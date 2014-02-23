@@ -21,7 +21,7 @@ def deploy(fingerengine, fingerprint):
 
     response = utility.requests_get(url + uri)
     if response.status_code is 200 and "FCKeditor" in response.content:
-       utility.Msg("FCKeditor exposed, attempting to write payload...")
+        utility.Msg("FCKeditor exposed, attempting to write payload...")
     else:
         utility.Msg("FCKeditor doesn't seem to be exposed (HTTP %d)" % response.status_code)
         return
