@@ -67,6 +67,8 @@ def parse(arguments):
                       description = 'Deployment flags and settings')
     deploy.add_argument("--deploy", help='Deploy to the discovered service',
                     action='store', dest='deploy', metavar='[file]')
+    deploy.add_argument("--undeploy", help='Undeploy file from server',
+                    action='store', dest='undeploy', metavar='[context]')
     deploy.add_argument("--deployer", help="Specify a deployer to use",
                     action='store', dest='deployer', default=None,
                     metavar='[deployer]')

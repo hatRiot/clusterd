@@ -2,6 +2,7 @@ from os.path import abspath
 from argparse import SUPPRESS
 from log import LOG
 import deployer
+import undeployer
 import pkgutil
 import utility
 
@@ -42,11 +43,15 @@ def auxengine(fingerengine):
                                                             LOG.SUCCESS)
                 elif vars(fingerengine.options)[mod.flag]:
                     mod.run(fingerengine, fingerprint)
-                
+
                 found.append(mod.name)
 
     if fingerengine.options.deploy:
         deployer.run(fingerengine)
+
+    # also check for undeploy
+    if fingerengine.options.undeploy:
+        undeployer.run(fingerengine)
 
 
 def build_platform_flags(platform, egroup):

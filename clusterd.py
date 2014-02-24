@@ -39,11 +39,6 @@ def prerun(options):
     # create our temporary directory
     mkdir(state.serve_dir)
 
-    # weblogic libcheck
-    if not deploy_utils.check_wl_libs():
-        utility.Msg("WebLogic libraries not found, disabling platform...", LOG.DEBUG)
-        state.supported_platforms.remove('weblogic')
-
 
 def postrun(options):
     """ Cleanup routine after everything is done

@@ -47,7 +47,7 @@ def run(fingerengine):
                 deployer.deploy(fingerengine, fingerprint)
 
                 if fingerengine.options.invoke_payload:
-                    invoke(fingerengine, fingerprint)
+                    invoke(fingerengine, fingerprint, deployer)
 
                 return
 

