@@ -1,5 +1,6 @@
 from src.platform.tomcat.authenticate import checkAuth
 from src.platform.tomcat.interfaces import TINTERFACES
+from src.module.deploy_utils import parse_war_path
 from log import LOG
 import utility
 
@@ -8,10 +9,7 @@ def undeploy(fingerengine, fingerprint):
     """
     """
 
-    context = fingerengine.options.undeploy
-    # ensure leading / is stripped
-    context = context if not '/' in context else context[1:]
-
+    context = parse_war_path(fingerengine.options.undeploy)
     base = "http://{0}:{1}".format(fingerengine.options.ip, fingerprint.port)
 
     if fingerprint.version in ["7.0", "8.0"]:
