@@ -20,6 +20,7 @@ class JINTERFACES:
     EIN = "JBoss EJB Invoker Servlet"
     RMI = "JBoss RMI Interface"
     STS = "JBoss Status Page"
+    HD = "JBoss HTTP Headers (Unreliable)"
 
 
 class WebConsoleInterface(FingerPrint):
