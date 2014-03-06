@@ -9,7 +9,10 @@ import utility
 versions = ["Any", "3.2", "4.0", "4.2", "5.0", "5.1"]
 title = JINTERFACES.JIN
 def deploy(fingerengine, fingerprint):
-    """
+    """ This deployer attempts to deploy to the JMXInvokerServlet, often
+    left unprotected.  For versions 3.x and 4.x we can deploy WARs, but for 5.x
+    the HttpAdaptor invoker is broken (in JBoss), so instead we invoke 
+    the DeploymentFileRepository method.  This requires a JSP instead of a WAR.
     """
 
     war_file = fingerengine.options.deploy
@@ -27,8 +30,18 @@ def deploy(fingerengine, fingerprint):
     if len(fp) > 0:
         fp = fp[0]
     else:
-        utility.Msg("Failed to find a valid fingerprint for deployment", LOG.ERROR)
-        return
+        ver = utility.capture_input("Could not reliably determine version, "
+                                    "please enter the remote JBoss instance"
+                                    " version: ")
+        if len(ver) > 0:
+            if '.' not in ver:
+                ver += '.0'
+
+            if ver not in versions:
+                utility.Msg("Failed to find a valid fingerprint for deployment.", LOG.ERROR)
+                return
+        else:
+            return
 
     if fp.version in ["5.0", "5.1"]:
         if '.war' in war_file:
