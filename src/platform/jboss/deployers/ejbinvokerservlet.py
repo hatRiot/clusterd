@@ -21,8 +21,19 @@ def deploy(fingerengine, fingerprint):
                     fingerengine.options.ip, fingerprint.port)
     local_url = "http://{0}:8000/{1}".format(utility.local_address(), war_name)
 
-    fp = [f for f in fingerengine.fingerprints if f.version != 'Any'][0]
+    fp = [f for f in fingerengine.fingerprints if f.version != 'Any']
+    if len(fp) > 0:
+        fp = fp[0]
+    else:
+        utility.Msg("Failed to find a valid fingerprint for deployment.", LOG.ERROR)
+        return
+
     if fp.version in ["5.0", "5.1"]:
+        if '.war' in war_file:
+            utility.Msg("Deploying via an exposed invoker for JBoss "
+                        "5.x requires a JSP payload", LOG.ERROR)
+            return
+
         response = invkdeploy(fp.version, url, abspath(war_file))
 
         if len(response) > 1:
