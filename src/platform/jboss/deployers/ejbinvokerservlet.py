@@ -40,6 +40,9 @@ def deploy(fingerengine, fingerprint):
             if ver not in versions:
                 utility.Msg("Failed to find a valid fingerprint for deployment.", LOG.ERROR)
                 return
+            else:
+                fp = fingerprint
+                fp.version = ver
         else:
             return
 
