@@ -25,8 +25,8 @@ class FPrint(FingerPrint):
                       "JBoss-3.2" : "3.2",
                       "JBoss-4.0" : "4.0",
                       "JBoss-4.2" : "4.2",
-                      "JBoss-5.0" : "5.x",  # could be 5.0 or 5.1
-                      "JBossAS-6" : "6.x"   # could be 6.0 or 6.1
+                      "JBoss-5.0" : "5.0",  # could be 5.0 or 5.1, treat as 5.0
+                      "JBossAS-6" : "6.0"   # could be 6.0 or 6.1, treat as 6.0
                    }
 
         try:
