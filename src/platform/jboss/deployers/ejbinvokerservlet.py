@@ -32,7 +32,7 @@ def deploy(fingerengine, fingerprint):
     else:
         ver = utility.capture_input("Could not reliably determine version, "
                                     "please enter the remote JBoss instance"
-                                    " version: ")
+                                    " version")
         if len(ver) > 0:
             if '.' not in ver:
                 ver += '.0'
