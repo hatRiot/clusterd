@@ -33,11 +33,11 @@ def run(options):
                     (PAYLOAD, lhost, lport, out))
 
     if "Created by" in resp:
-        utility.Msg("Payload generated (%s).  Payload: %s" % (out.split(' ')[2], payload))
+        utility.Msg("Payload generated (%s).  Payload: %s" % (out.split(' ')[2], PAYLOAD))
 
         # also log some auxiliary information
         getoutput("echo Generated at %s > ./src/lib/shell.log" % utility.timestamp())
         getoutput("echo %s:%s >> ./src/lib/shell.log" % (lhost, lport))
-        getoutput("echo %s >> ./src/lib/shell.log" % (payload))
+        getoutput("echo %s >> ./src/lib/shell.log" % (PAYLOAD))
     else:
         utility.Msg("Error generating payload: %s" % resp, LOG.ERROR)
