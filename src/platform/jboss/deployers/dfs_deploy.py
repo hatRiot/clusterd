@@ -21,7 +21,7 @@ def deploy(fingerengine, fingerprint):
         if "n" in tmp.lower():
             return
 
-        war_file = abspath("./src/lib/cmd.jsp")
+        war_file = abspath("./src/lib/resources/cmd.jsp")
         war_name = "cmd"
 
     utility.Msg("Preparing to deploy {0}...".format(war_file))

