@@ -10,4 +10,4 @@ if [ ! -f "invkdeploy.class" ]; then
 fi
 
 # invoke
-java -cp .:../console-mgr-classes.jar:../jbossall-client.jar invkdeploy $1 $2 $3
+java -cp .:../console-mgr-classes.jar:../jbossall-client.jar invkdeploy $1 $2 $3 $4

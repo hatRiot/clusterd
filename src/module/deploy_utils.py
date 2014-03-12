@@ -91,17 +91,18 @@ def wc_invoke(url, local_url, usr = None, pswd = None):
     return res
 
 
-def invkdeploy(version, url, local_url):
+def invkdeploy(version, url, local_url, random_int):
     """
     """
 
     res = None
     try:
-        res = check_output(["./invkdeploy.sh", version, url, local_url],
+        res = check_output(["./invkdeploy.sh", version, url, 
+                            local_url, str(random_int)],
                             cwd="./src/lib/jboss/jmxinvoke_deploy")
     except Exception, e:
         utility.Msg(e, LOG.DEBUG)
-        res = e
+        res = str(e)
 
     return res
 

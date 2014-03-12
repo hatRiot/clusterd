@@ -36,9 +36,18 @@ def invoke_war(fingerengine, fingerprint):
     else:
         utility.Msg("Using JSP {0} from {1} to invoke".format(jsp, dfile), LOG.DEBUG)
 
+    war_path = parse_war_path(dfile)
+    try:
+        # for jboss ejb/jmx invokers, we append a random integer 
+        # in case multiple deploys of the same name are used
+        if fingerengine.random_int:
+            war_path += fingerengine.random_int
+    except:
+        pass
+
     url = "http://{0}:{1}/{2}/{3}".format(fingerengine.options.ip,
                                           fingerprint.port,
-                                          parse_war_path(dfile),
+                                          war_path,
                                           jsp)
 
     if _invoke(url): 
