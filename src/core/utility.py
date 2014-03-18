@@ -51,7 +51,7 @@ def header():
     """
 
     print '\033[32m\n\t\tclusterd/%s - clustered attack toolkit\033[0m' % version()
-    print '\t\t  Supporting ' + ', '.join(x for x in state.supported_platforms)
+    print '\t\t\t\033[33m[Supporting %d platforms]\033[0m' % (len(state.supported_platforms)) 
     print ''
 
 
