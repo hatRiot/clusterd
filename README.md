@@ -18,6 +18,9 @@ The recommended installation of clusterd is to clone the Github repository
 
 clusterd features
 ----
+* clusterd currently supports five different application server platforms, with
+  several more currently in development and research phases
+
 * JBoss
     - Versions 3.x - 8.0 
     - Currently supported deployers:
@@ -40,6 +43,7 @@ clusterd features
         + FCKeditor for 8.x
     - Hash retrieval for versions 6 - 10
     - RDS admin bypass (CVE-2013-0632)
+    - Pass the hash authentication for versions 7 - 9
 
 * WebLogic
     - Versions 7, 8.1, 11, and 12
@@ -47,10 +51,16 @@ clusterd features
     - Dump deployed WARs over T3/T3S
     - Fetch host OS information
 
-* Tomcat fingerprinting
+* Tomcat
     - Versions 3.x - 8.x
     - Currently can deploy to all versions with an exposed manager interface
     - Dump deployed WARs
+    - Fetch host OS information
+
+* Railo 
+    - Versions 3.x - 4.x
+    - Currently supported deployers:
+        + Task scheduler for 3.x and 4.x
     - Fetch host OS information
 
 * Simple API for adding new platforms, fingerprints, deployers, and exploits
