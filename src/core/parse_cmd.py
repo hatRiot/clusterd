@@ -99,6 +99,9 @@ def parse(arguments):
     other.add_argument("--gen-payload", help='Generate a reverse shell payload',
                      action='store', dest='generate_payload',
                      metavar='[host:port] for reverse connection')
+    other.add_argument("--listen", help='Adapter to listen on when needed',
+                    action='store', dest='listener', metavar='[adapter]',
+                    default=None)
     other.add_argument("-d", help='Enable debug output', action='store_true',
                     dest='debug', default=False)
     other.add_argument("-l", help='Log output to file [$time$_log.log]',
@@ -133,6 +136,9 @@ def parse(arguments):
         # select a random user-agent from the list
         state.random_agent = choice(list(open('./src/lib/user-agents.txt'))).rstrip()
         utility.Msg("Random user agent '%s' selected" % (state.random_agent), LOG.DEBUG)
+
+    if options.listener:
+        state.listener = options.listener
 
     state.ssl = options.ssl
     state.bf_user = options.bf_user

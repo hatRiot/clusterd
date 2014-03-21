@@ -72,12 +72,28 @@ def timestamp():
 
 
 def local_address():
-    """ Return local adapter's IP address.  Only grabs the first
-    one for now.
-    TODO add a cli flag to set a specific adapter.
-    """
+    """ Return local adapter's IP address.  If a specific adapter
+    is specified, we grab that one, else we grab the first adapter's
+    IP address in the list.
 
-    return getoutput("/sbin/ifconfig").split("\n")[1].split()[1][5:]
+    If this turns out to cause issues for other platforms, we may
+    want to look into third party modules, such as netinet
+    """
+    
+    adapter = None        
+    ifconfig = getoutput("/sbin/ifconfig")
+    if state.listener:
+        ifconfig = ifconfig.split("\n")
+        for idx in xrange(len(ifconfig)):
+            if state.listener in ifconfig[idx]:
+                adapter = ifconfig[idx+1].split()[1][5:]
+    else:
+        adapter = ifconfig.split("\n")[1].split()[1][5:]
+
+    if not adapter:
+        Msg("Unable to find adapter %s" % state.listener, LOG.ERROR)
+
+    return adapter
 
 
 def build_request(args, kwargs):

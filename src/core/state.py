@@ -45,3 +45,8 @@ flog = None
 # we copy payloads into this location and clean it at
 # the end 
 serve_dir = "/tmp/.clusterd"
+
+# for modules that require a binding IP for accepting connections, such
+# as smb_hashes, this defines which adapter to bind to.  If none is specified
+# the first adapter in the list is selected.
+listener = None
