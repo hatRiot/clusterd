@@ -6,7 +6,7 @@ from os import getcwd, mkdir, path
 sys.path.insert(0, getcwd() + '/src/core/')
 
 from fingerprint import FingerEngine
-from src.module import generate_payload, deploy_utils
+from src.module import generate_payload, deploy_utils, discovery
 from auxengine import auxengine
 from parse_cmd import parse
 from log import LOG
@@ -24,6 +24,10 @@ def prerun(options):
     # first check if we need to generate a payload
     if options.generate_payload:
         generate_payload.run(options)
+
+    # Check to see if we need to run the discovery module
+    if options.discovery_file:
+        discovery.run(options)
 
     # then check if they want a listing of all deployers
     if options.deploy_list:
