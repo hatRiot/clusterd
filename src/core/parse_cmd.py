@@ -99,8 +99,8 @@ def parse(arguments):
     other.add_argument("--gen-payload", help='Generate a reverse shell payload',
                      action='store', dest='generate_payload',
                      metavar='[host:port] for reverse connection')
-    other.add_argument("--discover",help="Attempt to discover application servers using the specified nmap XML output (use -sV)",
-                     action="store",dest='discovery_file')
+    other.add_argument("--discover",help="Attempt to discover application servers using the specified nmap gnmap output (use -sV when scanning)",
+                     action="store",dest='discovery_file',metavar='[discovery_file]')
     other.add_argument("--listen", help='Adapter to listen on when needed',
                     action='store', dest='listener', metavar='[adapter]',
                     default=None)

@@ -97,22 +97,25 @@ def runDiscovery(targets,options):
 		                        fp.version, fp.title))
 
 def run(options):
-    """ 
-    This module takes an input file (for now, nmap gnmap output) with host IP addresses
-    and ports and runs the clusterd fingerprinting engine on all HTTP/S servers
-    identified. All common app server URLs will be checked for each server in order to
-    attempt to identify what may be running.
-    """
+	""" 
+	This module takes an input file (for now, nmap gnmap output) with host IP addresses
+	and ports and runs the clusterd fingerprinting engine on all HTTP/S servers
+	identified. All common app server URLs will be checked for each server in order to
+	attempt to identify what may be running.
+	"""
 
-    """Read the input file, for now we only support nmap gnmap - should have been run with
-    the -sV flag to detect HTTP/S servers on non-standard ports"""
+	"""Read the input file, for now we only support nmap gnmap - should have been run with
+	the -sV flag to detect HTTP/S servers on non-standard ports"""
+	try:
+		targets={}
+		inFile = open(options.discovery_file,'r')
+		if(detectFileType(inFile) == 'gnmap'):
+			targets = parseGnmap(inFile)
+		else:
+			utility.Msg("Discovery input file does not appear to be in nmap gnmap format", LOG.ERROR)
+			return
+		inFile.close()
+		runDiscovery(targets,options)
+	except:
+		utility.Msg("Error loading gnmap file for discovery", LOG.ERROR)
 
-    inFile = open(options.discovery_file,'r')
-
-    if(detectFileType(inFile) == 'gnmap'):
-    	targets = parseGnmap(inFile)
-    else:
-    	utility.Msg("Discovery input file does not appear to be in nmap gnmap format", LOG.ERROR)
-    	return
-
-    runDiscovery(targets,options)
