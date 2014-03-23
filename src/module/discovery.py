@@ -76,10 +76,9 @@ def doFingerprint(host, port, ssl, service):
 		fp = fingerprint[0].find_module(fingerprint[1]).load_module(fingerprint[1])
 		fp = fp.FPrint()
 		#Only try to fingerprint if we have a port match
-		if str(fp.port) == port:
-			if fp.check(host, port):
-				# set fingerprint port to match fingerengine port if defined
-				match_fps.append(fp)
+		if fp.check(host, port):
+			# set fingerprint port to match fingerengine port if defined
+			match_fps.append(fp)
 
 	return match_fps
 
@@ -89,12 +88,13 @@ def runDiscovery(targets,options):
 	platforms = [f for f in listdir(abspath("./src/platform/")) if re.match(r'^\w+$', f)]
 
 	'''Run a fingerprint on each host/port/platform combination'''
-	for platform in platforms:
-		for host in targets:
+	for host in targets:
+		utility.Msg("Beginning scan on host %s." % (host))
+		for platform in platforms:
 			for port in targets[host]:
 				for fp in doFingerprint(host,port[0],port[1],platform):
 					utility.Msg("Host: %s platform %s version %s %s..." % (host, fp.platform,
-		                        fp.version, fp.title))
+						fp.version, fp.title))
 
 def run(options):
 	""" 
@@ -116,6 +116,7 @@ def run(options):
 			return
 		inFile.close()
 		runDiscovery(targets,options)
-	except:
+	except KeyboardInterrupt:
+		pass
+	except OSError:
 		utility.Msg("Error loading gnmap file for discovery", LOG.ERROR)
-
