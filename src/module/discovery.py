@@ -1,10 +1,10 @@
 from log import LOG
-import utility
-import re
-from os import listdir
 from os.path import abspath
 from fingerprint import FingerEngine
+import utility
+import re
 import pkgutil
+import state
 
 def detectFileType(inFile):
 	#Check to see if file is of type gnmap
@@ -85,12 +85,11 @@ def doFingerprint(host, port, ssl, service):
 def runDiscovery(targets,options):
 	fingerengine = FingerEngine()
 	fingerengine.options = options
-	platforms = [f for f in listdir(abspath("./src/platform/")) if re.match(r'^\w+$', f)]
 
 	'''Run a fingerprint on each host/port/platform combination'''
 	for host in targets:
 		utility.Msg("Beginning scan on host %s" % (host))
-		for platform in platforms:
+		for platform in state.supported_platforms: 
 			for port in targets[host]:
 				for fp in doFingerprint(host,port[0],port[1],platform):
 					utility.Msg("\t%s (version %s port %s)" % (fp.title, 

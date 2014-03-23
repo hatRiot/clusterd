@@ -69,10 +69,10 @@ clusterd features
 examples / usage
 ----
 ```
-bryan@debdev:~/tools/clusterd$ ./clusterd.py 
+$ ./clusterd.py 
 
-        clusterd/0.1 - clustered attack toolkit
-          Supporting jboss, coldfusion, weblogic, tomcat
+        clusterd/0.2 - clustered attack toolkit
+            [Supporting 5 platforms]
 
 usage: ./clusterd.py [options]
 
@@ -96,7 +96,7 @@ Connection:
 Remote Host:
   Settings specific to the remote host
 
-  -a [jboss|coldfusion|weblogic|tomcat]
+  -a [jboss|coldfusion|weblogic|tomcat|railo]
                         Hint at remote host service
   -o [windows|linux]    Hint at remote host OS
   -v [version]          Specific version to test
@@ -109,6 +109,7 @@ Deploy:
   Deployment flags and settings
 
   --deploy [file]       Deploy to the discovered service
+  --undeploy [context]  Undeploy file from server
   --deployer [deployer]
                         Specify a deployer to use
   --invoke              Invoke payload after deployment
@@ -122,6 +123,7 @@ jboss modules:
 
 coldfusion modules:
   --cf-info             Dump host information
+  --cf-smb              Obtain SMB hash
 
 weblogic modules:
   --wl-info             Gather WebLogic info
@@ -133,6 +135,10 @@ tomcat modules:
   --tc-list             List deployed WARs
   --tc-smb              Obtain SMB hash
 
+railo modules:
+  --rl-info             Dump host information
+  --rl-smb              Obtain SMB hash
+
 Other:
   Miscellaneous flags
 
@@ -140,6 +146,10 @@ Other:
   --aux-list            List all available exploits
   --gen-payload [host:port] for reverse connection
                         Generate a reverse shell payload
+  --discover [discovery_file]
+                        Attempt to discover application servers using the
+                        specified nmap gnmap output (use -sV when scanning)
+  --listen [adapter]    Adapter to listen on when needed
   -d                    Enable debug output
   -l                    Log output to file [$time$_log.log]
 ```
