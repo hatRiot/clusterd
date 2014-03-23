@@ -89,12 +89,12 @@ def runDiscovery(targets,options):
 
 	'''Run a fingerprint on each host/port/platform combination'''
 	for host in targets:
-		utility.Msg("Beginning scan on host %s." % (host))
+		utility.Msg("Beginning scan on host %s" % (host))
 		for platform in platforms:
 			for port in targets[host]:
 				for fp in doFingerprint(host,port[0],port[1],platform):
-					utility.Msg("Host: %s platform %s version %s %s..." % (host, fp.platform,
-						fp.version, fp.title))
+					utility.Msg("\t%s (version %s port %s)" % (fp.title, 
+                                                 fp.version, port[0]), LOG.SUCCESS)
 
 def run(options):
 	""" 
