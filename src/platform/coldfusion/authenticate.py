@@ -93,8 +93,7 @@ def attemptPTH(url, usr_auth):
     if ':' in usr_auth:
         (usr, pwhsh) = usr_auth.split(':')
     else:
-        usr = 'admin'
-        pwhsh = usr_auth
+        (usr, pwhsh) = "admin", usr_auth
 
     salt = _salt(url) 
     hsh = hmac.new(salt, pwhsh, sha1).hexdigest().upper()
@@ -129,7 +128,10 @@ def checkAuth(ip, port, title, version):
             if cook:
                 return cook
 
-        (usr, pswd) = state.usr_auth.split(':')
+        if ':' in state.usr_auth:
+            (usr, pswd) = state.usr_auth.split(':')
+        else:
+            (usr, pswd) = "admin", state.usr_auth
         return _auth(usr, pswd, url, version)
 
     # else try default creds
