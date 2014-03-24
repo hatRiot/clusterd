@@ -29,6 +29,7 @@ def deploy(fingerengine, fingerprint):
     if not cookie:
         utility.Msg("Could not get auth to %s:%s" % (dip, fingerprint.port),
                                                     LOG.ERROR)
+        return
 
     utility.Msg("Preparing to deploy {0}..".format(cfm_file))
     utility.Msg("Fetching web root..", LOG.DEBUG)
