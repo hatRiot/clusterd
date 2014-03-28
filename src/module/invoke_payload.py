@@ -72,6 +72,10 @@ def invoke_cf(fingerengine, fingerprint, deployer):
         url = "http://{0}:{1}/userfiles/file/{2}".format(fingerengine.options.ip,
                                                          fingerprint.port,
                                                          dfile)
+    elif 'lfi_stager' in deployer.__name__:
+        url = 'http://{0}:{1}/{2}'.format(fingerengine.options.ip, 
+                                          fingerprint.port,
+                                          dfile)
     else:
         url = "http://{0}:{1}/CFIDE/{2}".format(fingerengine.options.ip,
                                                fingerprint.port,
