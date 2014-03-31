@@ -5,7 +5,7 @@ from requests import exceptions
 from log import LOG
 import utility
 
-versions = ["4.0", "4.1", "5.5", "6.0", "7.0", "8.0"]
+versions = ["4.0", "4.1", "5.0", "5.5", "6.0", "7.0", "8.0"]
 title = TINTERFACES.MAN
 def deploy(fingerengine, fingerprint):
     """ Through Tomcat versions, remotely deploying hasnt changed much.
