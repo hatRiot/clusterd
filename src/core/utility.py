@@ -36,9 +36,7 @@ def Msg(string, level=LOG.INFO):
 
 
 def log(string):
-    """ Logs a string to the state log file.  This currently does
-    not strip color coding, but eventually the strings coming into this
-    function should be raw strings without coloring, so TODO.
+    """ Logs a string to the state log file.
     """
 
     if state.flog:
