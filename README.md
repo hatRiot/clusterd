@@ -41,6 +41,7 @@ clusterd features
     - Currently supported deployers:
         + Task Scheduler for 7.x, 8.x, 9.x, and 10.x
         + FCKeditor for 8.x
+        + LFI Log Injection 6.x, 7.x, and 8.x
     - Hash retrieval for versions 6 - 10
     - RDS admin bypass (CVE-2013-0632)
     - Pass the hash authentication for versions 7 - 9

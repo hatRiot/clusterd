@@ -16,7 +16,7 @@ class Auxiliary:
 
     def __init__(self):
         self.name = 'Obtain SMB hash'
-        self.versions = ['5.5', '6.0', '7.0', '8.0']
+        self.versions = ['5.0', '5.5', '6.0', '7.0', '8.0']
         self.show = True
         self.flag = 'tc-smb'
         self._Listen = False
