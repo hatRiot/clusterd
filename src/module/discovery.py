@@ -18,7 +18,7 @@ def detectFileType(inFile):
 	if (firstLine.find('nmap') != -1 and thirdLine.find('Host:') != -1):
 		#Looks like a gnmap file - this wont be true for other nmap output types
 		#Check to see if -sV flag was used, if not, warn
-		if(firstLine.find('-sV') != -1 or firstLine.find('-A') != -1):
+		if(firstLine.find('-sV') != -1 or firstLine.find('-A') != -1 or firstLine.find('-sSV') != -1):
 			return 'gnmap'
 		else:
 			utility.Msg("Nmap version detection not used! Discovery module may miss some hosts!", LOG.INFO)
@@ -88,7 +88,7 @@ def runDiscovery(targets,options):
 
 	'''Run a fingerprint on each host/port/platform combination'''
 	for host in targets:
-		utility.Msg("Beginning scan on host %s" % (host))
+		utility.Msg("Beginning discovery scan on host %s" % (host))
 		for platform in state.supported_platforms: 
 			for port in targets[host]:
 				for fp in doFingerprint(host,port[0],port[1],platform):
