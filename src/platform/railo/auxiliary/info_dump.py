@@ -9,7 +9,7 @@ class Auxiliary:
 
     def __init__(self):
         self.name = 'Dump host information'
-        self.versions = ['3.0', '3.3', '4.0', '4.1']
+        self.versions = ['3.0', '3.3', '4.0', '4.1', '4.2']
         self.show = True
         self.flag = 'rl-info'
 
@@ -57,7 +57,7 @@ class Auxiliary:
             data = findall(d, response.content.translate(None, "\n\t\r"))
 
             # do some version-specific trimming
-            if fingerprint.version in ["4.1"]:
+            if fingerprint.version in ["4.1", '4.2']:
                headers = headers[4:]
                data = data[2:]
             elif fingerprint.version in ["3.0"]:
@@ -79,5 +79,5 @@ class Auxiliary:
             return ("150\">(.*?)</td>", "400\">(.*?)</td>")
         elif fingerprint.version in ["3.3"]:            
             return ("150\">(.*?)</td>", "tblContent\">(.*?)</td>")
-        elif fingerprint.version in ["4.0", "4.1"]:
+        elif fingerprint.version in ["4.0", "4.1", '4.2']:
             return ("\"row\">(.*?)</th>", "<td>(.*?)</td>")

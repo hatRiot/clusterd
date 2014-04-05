@@ -12,7 +12,7 @@ import state
 
 
 title = RINTERFACES.WEB
-versions = ["3.0", "3.3", "4.0", "4.1"]
+versions = ["3.0", "3.3", "4.0", "4.1", "4.2"]
 global cookie
 def deploy(fingerengine, fingerprint):
     """ Railo includes the same task scheduling function as ColdFusion
