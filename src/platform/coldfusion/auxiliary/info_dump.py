@@ -10,7 +10,7 @@ class Auxiliary:
 
     def __init__(self):
         self.name = 'Dump host information'
-        self.versions = ['7.0', '8.0', '9.0', '10.0']
+        self.versions = ['7.0', '8.0', '9.0', '10.0', '11.0']
         self.show = True
         self.flag = 'cf-info'
 
@@ -63,7 +63,7 @@ class Auxiliary:
             data = findall(regex[1], response.content.translate(None, "\n\t\r"))
  
             # pad
-            if fingerprint.version in ["8.0", "9.0", "10.0"]:
+            if fingerprint.version in ["8.0", "9.0", "10.0", '11.0']:
                 types.insert(0, "Version")
 
             for (row, data) in zip(types, data)[:26]:
