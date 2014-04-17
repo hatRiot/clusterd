@@ -1,6 +1,7 @@
 from src.platform.weblogic.interfaces import WINTERFACES
 from time import sleep
 from subprocess import Popen, PIPE, check_output
+from requests import get
 from signal import SIGINT
 from os import kill, system
 from sys import stdout
@@ -24,8 +25,8 @@ def _serve(war_file = None):
         if war_file:
             system("cp %s %s 2>/dev/null" % (war_file, state.serve_dir))
 
-        proc = Popen(["python", "-m", "SimpleHTTPServer"], stdout=PIPE,
-                        stderr=PIPE, cwd=state.serve_dir)
+        proc = Popen(["python", "-m", "SimpleHTTPServer", str(state.external_port)],
+                        stdout=PIPE, stderr=PIPE, cwd=state.serve_dir)
 
         while 'GET' not in proc.stderr.readline():
             sleep(1.0)
@@ -185,3 +186,14 @@ def parse_war_path(war, include_war = False):
         return war
     else:
         return war.split('.')[0]
+
+
+def killServe():
+    """ In the event that our local server does not get
+    invoked, we need to kill it tenderly
+    """
+
+    try:
+        get("http://localhost:%s" % state.external_port, timeout=1.0)
+    except:
+        pass

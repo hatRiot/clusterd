@@ -1,6 +1,6 @@
 from src.platform.jboss.interfaces import JINTERFACES
 from src.platform.jboss.authenticate import checkAuth
-from src.module.deploy_utils import _serve, waitServe
+from src.module.deploy_utils import _serve, waitServe, killServe
 from collections import OrderedDict
 from threading import Thread
 from requests import get, exceptions
@@ -47,8 +47,8 @@ def deploy(fingerengine, fingerprint):
                     ('action', 'invokeOp'),
                     ('name', 'jboss.system:service=MainDeployer'),
                     ('methodIndex', methodIndex[fingerprint.version]),
-                    ('arg0', 'http://{0}:8000/{1}'.format(
-                                            utility.local_address(), war_name))
+                    ('arg0', 'http://{0}:{1}/{2}'.format(
+                      utility.local_address(), state.external_port,war_name))
                     ])
 
     response = utility.requests_post(url, data=data)
@@ -82,8 +82,4 @@ def deploy(fingerengine, fingerprint):
                                (fingerengine.options.ip, response.status_code),
                                LOG.ERROR)
 
-        # kill our local HTTP server
-        try:
-            get("http://localhost:8000/", timeout=1.0)
-        except:
-            pass
+        killServe()

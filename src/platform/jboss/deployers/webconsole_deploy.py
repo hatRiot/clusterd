@@ -1,10 +1,11 @@
 from src.platform.jboss.interfaces import JINTERFACES
-from src.module.deploy_utils import _serve, wc_invoke, waitServe
+from src.module.deploy_utils import _serve, wc_invoke, waitServe,killServe
 from requests import get
 from threading import Thread
 from time import sleep
 from log import LOG
 from os.path import abspath
+import state
 import utility
 
 versions = ["3.2", "4.0", "4.2"]
@@ -26,7 +27,8 @@ def deploy(fingerengine, fingerprint):
     url = "http://{0}:{1}/web-console/Invoker".format(
                         fingerengine.options.ip, fingerprint.port)
 
-    local_url = "http://{0}:8000/{1}".format(utility.local_address(), war_name)
+    local_url = "http://{0}:{1}/{2}".format(utility.local_address(), 
+                                       state.external_port,war_name)
 
     # poll the URL to check for a 401
     response = utility.requests_get(url)
@@ -54,8 +56,4 @@ def deploy(fingerengine, fingerprint):
         utility.Msg("{0} deployed to {1}".format(war_file,
                                             fingerengine.options.ip),
                                             LOG.SUCCESS)
-
-    try:
-        get("http://localhost:8000/", timeout=1.0)
-    except:
-        pass
+    killServe()

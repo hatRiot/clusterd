@@ -50,3 +50,7 @@ serve_dir = "/tmp/.clusterd"
 # as smb_hashes, this defines which adapter to bind to.  If none is specified
 # the first adapter in the list is selected.
 listener = None
+
+# some modules require the remote server to come back and grab a file.
+# This variable will determine what port it makes the connection back to
+external_port = 8000

@@ -1,6 +1,6 @@
 from src.platform.railo.interfaces import RINTERFACES
 from src.platform.railo.authenticate import checkAuth
-from src.module.deploy_utils import _serve, waitServe, parse_war_path
+from src.module.deploy_utils import _serve, waitServe, parse_war_path, killServe
 from collections import OrderedDict
 from os.path import abspath
 from log import LOG
@@ -97,7 +97,9 @@ def create_task(ip, fingerprint, cfm_file, root):
     params = "?action=services.schedule&action2=create"
     data = OrderedDict([
                     ("name", cfm_file),
-                    ("url", "http://{0}:8000/{1}".format(utility.local_address(), cfm_file)),
+                    ("url", "http://{0}:{1}/{2}".format(
+                           utility.local_address(), state.external_port,
+                           cfm_file)),
                     ("interval", "once"),
                     ("start_day", "01"),
                     ("start_month", "01"),
@@ -122,7 +124,7 @@ def create_task(ip, fingerprint, cfm_file, root):
 
     # proceed to edit the task; railo loses its mind if every var isnt here
     params = "?action=services.schedule&action2=edit&task=" + csrf
-    data["port"] = 8000
+    data["port"] = state.external_port
     data["timeout"] = 50
     data["run"] = "update"
     data["publish"] = "yes"
@@ -172,11 +174,8 @@ def run_task(ip, fingerprint, cfm_path):
     if waitServe(server_thread):
         utility.Msg("{0} deployed to /{0}".format(cfm_file), LOG.SUCCESS)
 
-    try:
-        utility.requests_get("http://localhost:8000", timeout=1)
-    except:
-        pass
-            
+    killServe()
+
 
 def delete_task(ip, fingerprint, cfm_file):
     """
