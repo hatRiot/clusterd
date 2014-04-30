@@ -1,5 +1,6 @@
 from src.module.invoke_payload import invoke
 from log import LOG
+import state
 import utility
 import importlib
 import pkgutil
@@ -40,6 +41,14 @@ def run(fingerengine):
 
                     # they want to use a specific deployer
                     if not fingerengine.options.deployer in deployer.__name__:
+                        continue
+
+                # if the deployer is using waitServe, ensure the user knows
+                if 'waitServe' in dir(deployer):
+                    r = utility.capture_input("This deployer (%s) requires an external"\
+                                   " listening port (%s).  Continue? [Y/n]" % (
+                                      deployer.__name__, state.external_port))
+                    if 'n' in r.lower():
                         continue
 
                 utility.Msg("Deploying WAR with deployer %s (%s)" %

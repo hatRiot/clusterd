@@ -23,8 +23,8 @@ def _auth(pswd, url, title):
         data['login_passwordserver'] = pswd
 
     response = utility.requests_post(url, data=data)
-    if response.status_code is 200:
-        utility.Msg("Successfully authenticated with %s" % pswd, LOG.DEBUG)
+    if response.status_code is 200 and "login.login_password" not in response.content:
+        utility.Msg("Successfully authenticated with '%s'" % pswd, LOG.DEBUG)
         return dict_from_cookiejar(response.cookies)
 
 
@@ -53,7 +53,7 @@ def checkAuth(ip, port, title):
         with open(state.bf_wordlist, "r") as f:
             wordlist = [x.decode("ascii", "ignore").rstrip() for x in f.readlines()]
 
-        utility.Msg("Brute forcing with %d passwords..." % (state.bf_user,
+        utility.Msg("Brute forcing %s with %d passwords..." % (state.bf_user,
                                 len(wordlist)), LOG.DEBUG)
 
         try:
