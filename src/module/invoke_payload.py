@@ -13,6 +13,9 @@ def invoke(fingerengine, fingerprint, deployer):
 
     elif fingerengine.service in ["coldfusion"]:
         return invoke_cf(fingerengine, fingerprint, deployer)
+    
+    elif fingerengine.service in ['railo']:
+        return invoke_rl(fingerengine, fingerprint, deployer)
 
     else:
         utility.Msg("Platform %s does not support --invoke" % 
@@ -86,6 +89,20 @@ def invoke_cf(fingerengine, fingerprint, deployer):
     else:
         utility.Msg("Failed to invoke {0}".format(dfile), LOG.ERROR)
 
+
+def invoke_rl(fingerengine, fingerprint, deployer):
+    """
+    """
+
+    dfile = parse_war_path(fingerengine.options.deploy, True)
+    url = 'http://{0}:{1}/{2}'.format(fingerengine.options.ip, fingerprint.port,
+                                      dfile)
+
+    if _invoke(url):
+        utility.Msg("{0} invoked at {1}".format(dfile, fingerengine.options.ip))
+    else:
+        utility.Msg("Failed to invoke {0}".format(dfile), LOG.ERROR)
+                       
 
 def _invoke(url):
     """ Make the request
