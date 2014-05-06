@@ -13,6 +13,15 @@ def run(fingerengine):
     deployed WAR and attempt to catch the shell back.
     """
 
+    # before we do anything, ensure the deploying file exists...
+    try:
+        with open(fingerengine.options.deploy): pass
+    except:
+        utility.Msg("File '%s' could not be found." % fingerengine.options.deploy,
+                                                      LOG.ERROR)
+        return
+
+
     utility.Msg("Loading deployers for platform %s" % fingerengine.service, LOG.DEBUG)
 
     load = importlib.import_module('src.platform.%s.deployers' % fingerengine.service)

