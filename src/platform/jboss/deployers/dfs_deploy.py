@@ -56,6 +56,6 @@ def deploy(fingerengine, fingerprint):
             return
 
     if response.status_code == 200:
-        utility.Msg("Successfully deployed '{0}'".format(war_name + '.jsp'), LOG.SUCCESS)
+        utility.Msg("Successfully deployed '/{0}/{1}'".format(war_name, war_name + '.jsp'), LOG.SUCCESS)
     else:
         utility.Msg("Failed to deploy (HTTP %d)" % response.status_code, LOG.ERROR)
