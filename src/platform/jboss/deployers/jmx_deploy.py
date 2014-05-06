@@ -7,7 +7,9 @@ from requests import get, exceptions
 from time import sleep
 from log import LOG
 from os.path import abspath
+import state
 import utility
+
 
 versions = ["3.0", "3.2", "4.0", "4.2", "6.0", "6.1"]
 title = JINTERFACES.JMX
