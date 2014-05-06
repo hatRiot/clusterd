@@ -24,7 +24,7 @@ def deploy(fingerengine, fingerprint):
         war_file = abspath("./src/lib/resources/cmd.jsp")
         war_name = "cmd"
 
-    utility.Msg("Preparing to deploy {0}...".format(war_file))
+    utility.Msg("Preparing to deploy {0}...".format(war_name))
 
     url = "http://{0}:{1}/jmx-console/HtmlAdaptor".format(
                     fingerengine.options.ip, fingerprint.port)
@@ -56,6 +56,6 @@ def deploy(fingerengine, fingerprint):
             return
 
     if response.status_code == 200:
-        utility.Msg("Successfully deployed {0}".format(war_file), LOG.SUCCESS)
+        utility.Msg("Successfully deployed '{0}'".format(war_name + '.jsp'), LOG.SUCCESS)
     else:
         utility.Msg("Failed to deploy (HTTP %d)" % response.status_code, LOG.ERROR)
