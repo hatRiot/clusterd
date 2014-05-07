@@ -18,7 +18,7 @@ The recommended installation of clusterd is to clone the Github repository
 
 clusterd features
 ----
-* clusterd currently supports five different application server platforms, with
+* clusterd currently supports six different application server platforms, with
   several more currently in development and research phases
 
 * JBoss
@@ -62,6 +62,10 @@ clusterd features
     - Versions 3.x - 4.x
     - Currently supported deployers:
         + Task scheduler for 3.x and 4.x
+    - Fetch host OS information
+
+* Axis2
+    - Versions 1.4 - 1.6
     - Fetch host OS information
 
 * Simple API for adding new platforms, fingerprints, deployers, and exploits
