@@ -17,9 +17,9 @@ def _auth(usr, pswd, url, version):
            }
 
     response = utility.requests_post(url, data=data)
-    if response.status_code is 200:
+    if response.status_code is 200 and not "name=\"password\"" in response.content:
         utility.Msg("Successfully authenticated with %s:%s" % (usr, pswd), LOG.DEBUG)
-        return (dict_from_cookiejar(res.cookies), None)
+        return dict_from_cookiejar(response.cookies)
         
 
 def checkAuth(ip, port, title, version):
