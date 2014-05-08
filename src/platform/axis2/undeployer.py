@@ -9,6 +9,11 @@ def undeploy(fingerengine, fingerprint):
     """ Remove a deployed service from the remote Axis2 server
     """
 
+    if fingerprint.version not in ['1.6']:
+        utility.Msg("Version %s does not support undeploying via the web interface"
+                        % fingerprint.version, LOG.ERROR)
+        return
+
     context = parse_war_path(fingerengine.options.undeploy)
     base = 'http://{0}:{1}'.format(fingerengine.options.ip, fingerprint.port)
     uri = '/axis2/axis2-admin/deleteService?serviceName={0}'.format(context)
