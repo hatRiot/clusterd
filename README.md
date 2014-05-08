@@ -66,7 +66,11 @@ clusterd features
 
 * Axis2
     - Versions 1.4 - 1.6
+    - Currently supported deployers:
+        + Admin interface for 1.4, 1.5, and 1.6
     - Fetch host OS information
+    - View deployed services
+    - Credential disclosure for 1.4
 
 * Simple API for adding new platforms, fingerprints, deployers, and exploits
 * Various auxiliary modules for vulnerabilities and exploitation techniques
