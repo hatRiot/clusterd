@@ -131,7 +131,7 @@ def invoke_axis2(fingerengine, fingerprint, deployer):
                 fingerengine.options.ip, fingerprint.port,
                 dfile)
 
-    if fingerprint.version in ['1.4', '1.5']:
+    if fingerprint.version not in ['1.6']:
         # versions < 1.6 require an explicit invocation of run
         url += '/run'
 
