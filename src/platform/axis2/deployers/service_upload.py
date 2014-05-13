@@ -7,7 +7,7 @@ import utility
 
 
 title = AINTERFACES.DSR
-versions = ['1.4', '1.5', '1.6']
+versions = ['1.2', '1.3', '1.4', '1.5', '1.6']
 def deploy(fingerengine, fingerprint):
     """ Upload a service via the administrative interface
     """
