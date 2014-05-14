@@ -97,10 +97,18 @@ def invkdeploy(version, url, local_url, random_int):
     """
 
     res = None
+    creds = None
+    if state.usr_auth != None:
+        creds = state.usr_auth.split(':')
     try:
-        res = check_output(["./invkdeploy.sh", version, url, 
-                            local_url, str(random_int)],
-                            cwd="./src/lib/jboss/jmxinvoke_deploy")
+        if creds != None:
+            res = check_output(["./invkdeploy.sh", version, url, 
+                                local_url, str(random_int),creds[0],creds[1]],
+                                cwd="./src/lib/jboss/jmxinvoke_deploy")
+        else:
+            res = check_output(["./invkdeploy.sh", version, url, 
+                                local_url, str(random_int)],
+                                cwd="./src/lib/jboss/jmxinvoke_deploy")
     except Exception, e:
         utility.Msg(e, LOG.DEBUG)
         res = str(e)

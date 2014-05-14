@@ -7,6 +7,7 @@ import org.jboss.console.remote.RemoteMBeanAttributeInvocation;
 import org.jboss.console.remote.RemoteMBeanInvocation;
 import org.jboss.security.SecurityAssociation;
 import org.jboss.security.SimplePrincipal;
+import org.jboss.invocation.MarshalledValue;
 
 /*
  This application is part of the clusterd attack framework.
@@ -45,7 +46,7 @@ public class webc_deploy {
 
             if ( args.length > 2 && args[2] != "None"){
                 SecurityAssociation.setPrincipal(new SimplePrincipal(args[2]));
-                SecurityAssociation.setCredential(args[3]);
+                SecurityAssociation.setCredential(new MarshalledValue(args[3]));
             }
         } catch(Exception e){
             System.err.println(e);
