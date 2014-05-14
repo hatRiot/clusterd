@@ -33,6 +33,8 @@ def undeploy(fingerengine, fingerprint):
 
     if fingerprint.version in ["7.0", "8.0"]:
         uri = "/manager/text/undeploy?path=/{0}".format(context)
+    elif fingerprint.version in ['4.0', '4.1']:
+        uri = '/manager/html/remove?path=/{0}'.format(context)
     else:
         uri = "/manager/html/undeploy?path=/{0}".format(context)
 
@@ -48,8 +50,9 @@ def undeploy(fingerengine, fingerprint):
     response = utility.requests_get(url, cookies=cookies[0],
                                          auth=cookies[1])
     
-    if response.status_code == 200 and 'Undeployed application at context'\
-                                                        in response.content:
+    if response.status_code == 200 and \
+                ('Undeployed application at context' in response.content or\
+                 'OK' in response.content):
         utility.Msg("Successfully undeployed %s" % context, LOG.SUCCESS)
     elif 'No context exists for path' in response.content:
         utility.Msg("Could not find a context for %s" % context, LOG.ERROR)
