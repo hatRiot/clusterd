@@ -58,7 +58,7 @@ def version():
     be used when checking for updates.
     """
 
-    return "0.2.1"
+    return "0.3"
 
 
 def timestamp():
