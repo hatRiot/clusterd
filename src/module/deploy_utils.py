@@ -1,6 +1,6 @@
 from src.platform.weblogic.interfaces import WINTERFACES
 from time import sleep
-from subprocess import Popen, PIPE, check_output
+from subprocess import Popen, PIPE, check_output,STDOUT
 from requests import get
 from signal import SIGINT
 from os import kill, system
@@ -104,15 +104,14 @@ def invkdeploy(version, url, local_url, random_int):
         if creds != None:
             res = check_output(["./invkdeploy.sh", version, url, 
                                 local_url, str(random_int),creds[0],creds[1]],
-                                cwd="./src/lib/jboss/jmxinvoke_deploy")
+                                cwd="./src/lib/jboss/jmxinvoke_deploy",stderr=STDOUT)
         else:
             res = check_output(["./invkdeploy.sh", version, url, 
                                 local_url, str(random_int)],
-                                cwd="./src/lib/jboss/jmxinvoke_deploy")
+                                cwd="./src/lib/jboss/jmxinvoke_deploy",stderr=STDOUT)
     except Exception, e:
         utility.Msg(e, LOG.DEBUG)
         res = str(e)
-
     return res
 
 
