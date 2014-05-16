@@ -92,7 +92,7 @@ def parse(arguments):
 
     other = parser.add_argument_group("Other",
                             description='Miscellaneous flags')
-    other.add_argument("--deploy-list", help="List all available deployers",
+    other.add_argument("--deployer-list", help="List all available deployers",
                     action='store_true', dest='deploy_list', default=False)
     other.add_argument("--aux-list", help="List all available exploits",
                     action='store_true', dest='aux_list', default=False)
