@@ -9,7 +9,7 @@ def invoke(fingerengine, fingerprint, deployer):
     """
     """
 
-    if fingerengine.service in ["jboss", "tomcat"]:
+    if fingerengine.service in ["jboss", "tomcat", "weblogic"]:
         return invoke_war(fingerengine, fingerprint)
 
     elif fingerengine.service in ["coldfusion"]:
