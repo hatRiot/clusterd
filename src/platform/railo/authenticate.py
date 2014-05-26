@@ -37,6 +37,9 @@ def checkAuth(ip, port, title):
         url = "http://{0}:{1}/railo-context/admin/web.cfm".format(ip, port)
     elif title is RINTERFACES.SRV:
         url = "http://{0}:{1}/railo-context/admin/server.cfm".format(ip, port)
+    else:
+        utility.Msg("Interface %s not supported yet." % title, LOG.DEBUG)
+        return
 
     if state.usr_auth:
         # check with given auth; handle both cases of "default" and ":default"

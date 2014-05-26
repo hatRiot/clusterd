@@ -74,6 +74,8 @@ def parse(arguments):
                     metavar='[deployer]')
     deploy.add_argument("--invoke", help="Invoke payload after deployment",
                     action='store_true', dest='invoke_payload', default=False)
+    deploy.add_argument("--rand-payload", help='Use a random name for the deployed file',
+                    action='store_true', dest='rand_payload', default=None)
     deploy.add_argument("-b", help="Brute force credentials for user [admin]", action='store',
                     dest='bf_user', metavar='[user]', default='admin')
     deploy.add_argument('--wordlist', help='Wordlist for brute forcing passwords',

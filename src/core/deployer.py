@@ -1,5 +1,8 @@
 from src.module.invoke_payload import invoke
+from os import system, path
+from random import choice
 from log import LOG
+import string
 import state
 import utility
 import importlib
@@ -9,8 +12,10 @@ import pkgutil
 def run(fingerengine):
     """ This core module is used to load a specific platform's deployers
     and iterate through fingerprints to find one to deploy to.  If the --invoke
-    flag was passed, then we automatically run invoke_war, which will call the
-    deployed WAR and attempt to catch the shell back.
+    flag was passed, then we automatically run invoke_war, which will invoke the
+    invoke_payload module.
+
+    By the time a deployer is called, we should have everything setup for it to work.
     """
 
     # before we do anything, ensure the deploying file exists...
@@ -20,6 +25,16 @@ def run(fingerengine):
         utility.Msg("File '%s' could not be found." % fingerengine.options.deploy,
                                                       LOG.ERROR)
         return
+
+    # check if we are using a random payload name 
+    if fingerengine.options.rand_payload:
+        payload = path.abspath(fingerengine.options.deploy)
+        rand = '%s/%s.%s' % (state.serve_dir, 
+              ''.join(choice(string.ascii_lowercase+string.digits) for x in range(5)),
+              payload.split('.',1)[1])
+        system("cp %s %s 2>/dev/null" % (payload, rand))
+
+        fingerengine.options.deploy = rand
 
 
     utility.Msg("Loading deployers for platform %s" % fingerengine.service, LOG.DEBUG)

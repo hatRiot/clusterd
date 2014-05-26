@@ -71,7 +71,7 @@ def invoke_war(fingerengine, fingerprint):
                          jsp)
 
     if _invoke(url): 
-        utility.Msg("{0} invoked at {1}".format(dfile, fingerengine.options.ip))
+        utility.Msg("{0} invoked at {1}".format(war_path, fingerengine.options.ip))
     else:
         utility.Msg("Failed to invoke {0}".format(parse_war_path(dfile, True)),
                                                   LOG.ERROR)
