@@ -22,7 +22,7 @@ def _auth(usr, pswd, url, version):
     """
 
     authobj = HTTPBasicAuth
-    if version in ['7.0', '7.1', '8.0']:
+    if version in ['7.0', '7.1', '8.0', '8.1']:
         authobj = HTTPDigestAuth
 
     res = utility.requests_get(url, auth=authobj(usr, pswd))

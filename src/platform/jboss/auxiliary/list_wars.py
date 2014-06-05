@@ -22,7 +22,7 @@ class Auxiliary:
 
         if fingerprint.title == JINTERFACES.JMX:
             return True
-        elif fingerprint.version in ["7.0", "7.1", '8.0']:
+        elif fingerprint.version in ["7.0", "7.1", '8.0', '8.1']:
             return True
 
         return False
@@ -38,7 +38,7 @@ class Auxiliary:
            url = 'http://{0}:{1}/jmx-console/HtmlAdaptor?action='\
                  'displayMBeans&filter=jboss.web.deployment'.format\
                   (fingerengine.options.ip, fingerprint.port)
-        elif fingerprint.version in ["7.0", "7.1", '8.0']:
+        elif fingerprint.version in ["7.0", "7.1", '8.0', '8.1']:
             return self.run7(fingerengine, fingerprint)
         elif fingerprint.title == JINTERFACES.JMX:
             url = 'http://{0}:{1}/jmx-console/'.format(fingerengine.options.ip,
