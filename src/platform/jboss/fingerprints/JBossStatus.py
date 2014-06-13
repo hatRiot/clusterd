@@ -1,3 +1,4 @@
+from src.platform.jboss.authenticate import checkAuth
 from src.platform.jboss.interfaces import JINTERFACES
 from cprint import FingerPrint
 from log import LOG
