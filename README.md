@@ -22,7 +22,7 @@ clusterd features
   several more currently in development and research phases
 
 * JBoss
-    - Versions 3.x - 8.0 
+    - Versions 3.x - 8.1 
     - Currently supported deployers:
         + /jmx-console/MainDeployer for 3.x, 4.x, and 6.x
         + /jmx-console/DeploymentFileRepository for 3.x, 4.x, and 5.x

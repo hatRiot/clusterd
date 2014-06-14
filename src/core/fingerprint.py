@@ -39,12 +39,15 @@ class FingerEngine:
             utility.Msg("Checking %s version %s %s..." % (fp.platform,
                                     fp.version, fp.title))
 
-            if fp.check(ip, port):
+            try:
+                if fp.check(ip, port):
 
-                # set fingerprint port to match fingerengine port if defined
-                if vars(self.options)['port']:
-                    fp.port = self.options.port
-                match_fps.append(fp)
+                    # set fingerprint port to match fingerengine port if defined
+                    if vars(self.options)['port']:
+                        fp.port = self.options.port
+                    match_fps.append(fp)
+            except Exception, e:
+                utility.Msg("Exception with fingerprint: %s" % e, LOG.DEBUG)
 
         return match_fps
 
