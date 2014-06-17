@@ -57,7 +57,8 @@ def deploy(fingerengine, fingerprint):
                           fingerengine.random_int)
 
     if len(response) > 1:
-        if('org.jboss.web.tomcat.security.SecurityAssociationValve' in response and 'org.apache.catalina.authenticator.AuthenticatorBase.invoke' in response):
+        if 'org.jboss.web.tomcat.security.SecurityAssociationValve' in response \
+                and 'org.apache.catalina.authenticator.AuthenticatorBase.invoke' in response:
             utility.Msg('Deployment failed due to insufficient or invalid credentials.', LOG.ERROR)
         else:
             utility.Msg(response, LOG.DEBUG)
