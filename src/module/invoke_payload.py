@@ -39,7 +39,7 @@ def invoke_war(fingerengine, fingerprint):
     if '.war' in dfile:
         jsp = getoutput("unzip -l %s | grep jsp" % dfile).split(' ')[-1]
     elif '.jsp' in dfile:
-        jsp = dfile
+        jsp = parse_war_path(dfile, True)
 
     if jsp == '':
         utility.Msg("Failed to find a JSP in the deployed WAR", LOG.DEBUG)
@@ -56,19 +56,11 @@ def invoke_war(fingerengine, fingerprint):
     except:
         pass
 
-    url = "http://{0}:{1}/{2}/{3}"
-    if 'random_int' in dir(fingerengine):
-        # we've deployed via ejb/jmxinvokerservlet, so the path
-        # will be based upon a random number
-        url = url.format(fingerengine.options.ip,
-                         fingerprint.port,
-                         war_path + str(fingerengine.random_int),
-                         jsp)
-    else:
-        url = url.format(fingerengine.options.ip,
-                         fingerprint.port,
-                         war_path,
-                         jsp)
+    url = "http://{0}:{1}/{2}/{3}".format(
+                            fingerengine.options.ip,
+                            fingerprint.port,
+                            war_path,
+                            jsp)
 
     if _invoke(url): 
         utility.Msg("{0} invoked at {1}".format(war_path, fingerengine.options.ip))
@@ -125,7 +117,6 @@ def invoke_axis2(fingerengine, fingerprint, deployer):
     """ Invoke an Axis2 payload
     """
 
-    cnt = 0
     dfile = parse_war_path(fingerengine.options.deploy)
     url = 'http://{0}:{1}/axis2/services/{2}'.format(
                 fingerengine.options.ip, fingerprint.port,
@@ -137,15 +128,9 @@ def invoke_axis2(fingerengine, fingerprint, deployer):
 
     utility.Msg("Attempting to invoke...")
 
-    # axis2 takes a few seconds to get going, probe for 5s
-    while cnt < 5:
-
-        if _invoke(url):
-            utility.Msg("{0} invoked at {1}".format(dfile, fingerengine.options.ip))
-            return
-
-        cnt += 1
-        sleep(1)
+    if _invoke(url):
+        utility.Msg("{0} invoked at {1}".format(dfile, fingerengine.options.ip))
+        return
 
     utility.Msg("Failed to invoke {0}".format(dfile), LOG.ERROR)
 
@@ -155,10 +140,20 @@ def _invoke(url):
     """
 
     status = False
+    cnt = 0
     try:
-        response = utility.requests_get(url)
-        if response.status_code in [200, 202]:
-            status = True
+
+        # Some servers take a second or two to deploy the application; probe for 10s
+        while cnt < 5:
+
+            response = utility.requests_get(url)
+            if response.status_code in [200, 202]:
+                status = True
+                break
+            
+            cnt += 1
+            sleep(2)
+
     except Exception, e:
         utility.Msg("Failed to invoke payload: %s" % e, LOG.ERROR)
         status = False
