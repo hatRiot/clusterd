@@ -1,4 +1,3 @@
-from src.platform.axis2.authenticate import checkAuth
 from auxiliary import Auxiliary
 from log import LOG
 from re import findall
