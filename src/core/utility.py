@@ -168,6 +168,16 @@ def requests_put(*args, **kwargs):
     return requests.put(*args, **kwargs)
 
 
+def requests_delete(*args, **kwargs):
+    """ Generate a DELETE request
+    """
+
+    (args, kwargs) = build_request(args, kwargs)
+    Msg("Making DELETE request to {0} with args {1}".format(args[0], kwargs),
+                                                     LOG.DEBUG)
+    return requests.delete(*args, **kwargs)
+
+
 def capture_input(output_string):
     """ Capture and return user input
     """
