@@ -25,7 +25,7 @@ def checkAuth(ip, port, title):
 
     if title == GINTERFACES.GAD:
 
-        url = 'https://{0}:{1}/management/domain'.format(ip, port)
+        url = 'http://{0}:{1}/management/domain'.format(ip, port)
 
         # check with given auth
         if state.usr_auth:

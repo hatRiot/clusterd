@@ -20,6 +20,7 @@ class FPrint(FingerPrint):
         """
 
         versions = {
+                     "Oracle GlassFish Server 3.0" : "3.0",
                      "GlassFish Server Open Source Edition 3.1" : "3.1",
                      "GlassFish Server Open Source Edition  4.0" : "4.0"
                    }
