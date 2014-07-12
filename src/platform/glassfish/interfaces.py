@@ -37,7 +37,7 @@ class ManagerInterface(FingerPrint):
             response = utility.requests_get(url)
             if response.status_code == 404:
 
-                data = findall("GlassFish .*Edition  (.*?) </h3>", response.content)
+                data = findall("Edition (.*?) *</h3>", response.content)
                 if len(data) > 0 and self.version in data[0]:
 
                     #

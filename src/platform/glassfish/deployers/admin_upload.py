@@ -7,7 +7,7 @@ import utility
 import json
 
 
-versions = ['4.0']
+versions = ['3.1', '4.0']
 title = GINTERFACES.GAD
 def deploy(fingerengine, fingerprint):
     """ Upload via the exposed REST API
