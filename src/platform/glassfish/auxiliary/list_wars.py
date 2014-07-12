@@ -1,0 +1,54 @@
+from src.platform.glassfish.authenticate import checkAuth
+from src.platform.glassfish.interfaces import GINTERFACES
+from auxiliary import Auxiliary
+from re import findall
+from log import LOG
+import json
+import utility
+
+class Auxiliary:
+
+    def __init__(self):
+        self.name = 'List deployed applications'
+        self.versions = ['Any']
+        self.show = True
+        self.flag = 'gf-list'
+
+    def check(self, fingerprint):
+        """
+        """
+
+        if fingerprint.title == GINTERFACES.GAD:
+            return True
+
+        return False
+
+    def run(self, fingerengine, fingerprint):
+        """
+        """
+
+        utility.Msg("Obtaining deployed applications...")
+        base = 'https://{0}:{1}'.format(fingerengine.options.ip,
+                                        fingerprint.port)
+        uri = '/management/domain/applications/list-applications'
+        headers = { "Accept" : "application/json" }
+        
+        cookie = checkAuth(fingerengine.options.ip, fingerprint.port,
+                           fingerprint.title)
+        if not cookie:
+            utility.Msg("Could not get auth on %s:%s" % (fingerengine.options.ip,
+                                                         fingerprint.port),
+                                                        LOG.ERROR)
+            return
+
+        response = utility.requests_get(base+uri, auth=cookie, headers=headers)
+        if response.status_code is 200:
+
+            data = json.loads(response.content)
+            if not 'properties' in data.keys():
+                utility.Msg("No applications found.")
+                return
+
+            utility.Msg("Discovered %d deployed apps" % len(data['properties']))
+            for entry in data['properties'].keys():
+                utility.Msg('  /%s' % entry)

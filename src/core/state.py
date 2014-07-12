@@ -4,7 +4,7 @@ by parsing command line arguments, but can be modified individually if necessary
 
 # supported platforms by clusterd
 supported_platforms = ['jboss', 'coldfusion', 'weblogic', 'tomcat', 'railo',
-                       'axis2']
+                       'axis2', 'glassfish']
 
 # proxy to use for outgoing connections
 proxy = None

@@ -77,7 +77,13 @@ def run(fingerengine):
 
                 utility.Msg("Deploying WAR with deployer %s (%s)" %
                                 (deployer.title, deployer.__name__), LOG.DEBUG)
-                deployer.deploy(fingerengine, fingerprint)
+
+                try:
+                    deployer.deploy(fingerengine, fingerprint)
+                except Exception, e:
+                    # catch and log as debug; likely an uncaught timeout
+                    utility.Msg("Deployer %s failed: %s" % (deployer.__name__, e),
+                                                           LOG.DEBUG)
 
                 if fingerengine.options.invoke_payload:
                     invoke(fingerengine, fingerprint, deployer)
