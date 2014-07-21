@@ -34,7 +34,7 @@ def prerun(options):
         deploy_utils.deploy_list()
 
     if options.aux_list:
-        deploy_utils.auxiliary_list()
+        deploy_utils.auxiliary_list(options.aux_list)
 
     if path.isdir(state.serve_dir):
         # stale temp dir from a crash, etc.

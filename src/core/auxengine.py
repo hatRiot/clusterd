@@ -38,18 +38,27 @@ def auxengine(fingerengine):
                 continue
 
             if mod.name not in found and mod.check(fingerprint):
-                if fingerengine.options.fp and not mod.show:
+                if fingerengine.options.fp:
                     utility.Msg("Vulnerable to %s (--%s)" % (mod.name, mod.flag),
                                                             LOG.SUCCESS)
                 elif vars(fingerengine.options)[mod.flag]:
-                    mod.run(fingerengine, fingerprint)
+                    try:
+                        mod.run(fingerengine, fingerprint)
+                    except Exception, e:
+                        utility.Msg("Error with module: %s" % e, LOG.ERROR)
 
                 found.append(mod.name)
+
+    execMod(fingerengine)
+
+
+def execMod(fingerengine):
+    """
+    """
 
     if fingerengine.options.deploy:
         deployer.run(fingerengine)
 
-    # also check for undeploy
     if fingerengine.options.undeploy:
         undeployer.run(fingerengine)
 
@@ -75,6 +84,6 @@ def build_platform_flags(platform, egroup):
             continue
 
         egroup.add_argument("--%s" % mod.flag, action='store_true', dest=mod.flag,
-                        help=mod.name if mod.show else SUPPRESS)
+                        help=SUPPRESS)
 
     return egroup

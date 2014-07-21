@@ -13,7 +13,6 @@ class Auxiliary:
     def __init__(self):
         self.name = "List deployed WARs"
         self.versions = ['Any']
-        self.show = True
         self.flag = "jb-list"
 
     def check(self, fingerprint):

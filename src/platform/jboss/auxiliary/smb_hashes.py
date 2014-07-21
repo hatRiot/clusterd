@@ -17,7 +17,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'Obtain SMB hash' 
         self.versions = ['3.0','3.2','4.0','4.2','5.0','5.1','6.0','6.1']
-        self.show = True
         self.flag = 'jb-smb'
         self._Listen = False
 

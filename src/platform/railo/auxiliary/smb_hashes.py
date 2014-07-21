@@ -16,7 +16,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'Obtain SMB hash'
         self.versions = ['3.3', '4.0']
-        self.show = True
         self.flag = 'rl-smb'
         self._Listen = False
 

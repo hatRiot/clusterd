@@ -13,7 +13,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'Administrative Hash Disclosure'
         self.versions = ["6.0", "7.0", "8.0", "9.0", "10.0"]
-        self.show = False
         self.flag = 'cf-hash'
 
     def check(self, fingerprint):

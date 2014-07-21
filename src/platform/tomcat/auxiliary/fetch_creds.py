@@ -11,7 +11,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'Fetch credentials'
         self.versions = ['3.3']
-        self.show = False
         self.flag = 'tc-ofetch' # someday there might be a real fetch...
 
     def check(self, fingerprint):

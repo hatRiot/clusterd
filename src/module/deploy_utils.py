@@ -150,18 +150,27 @@ def deploy_list():
 
         for deployer in modules:
 
-            dp = deployer[0].find_module(deployer[1]).load_module(deployer[1])
-            if 'Any' in dp.versions: dp.versions.remove("Any") # used for FP only
-            utility.Msg("\t%s (%s [%s])" % (dp.title, deployer[1], '|'.join(dp.versions)))
+            try:
+                dp = deployer[0].find_module(deployer[1]).load_module(deployer[1])
+                if 'Any' in dp.versions: dp.versions.remove("Any") # used for FP only
+                utility.Msg("\t%s (%s [%s])" % (dp.title, deployer[1], '|'.join(dp.versions)))
+
+            except Exception, e:
+                utility.Msg(e, LOG.DEBUG)
+                continue
 
 
-def auxiliary_list():
+def auxiliary_list(usr_platform = None):
     """ Lists all platform auxiliary modules
     """
 
     for platform in state.supported_platforms:
 
-        utility.Msg("Auxiliarys for '%s'" % platform, LOG.UPDATE)
+        # if they've specified a specific platform, check for it
+        if usr_platform != 'All' and usr_platform != platform:
+            continue
+
+        utility.Msg("Auxiliary modules for '%s'" % platform, LOG.UPDATE)
         load = importlib.import_module('src.platform.%s.auxiliary' % platform)
 
         modules = list(pkgutil.iter_modules(load.__path__))
@@ -177,9 +186,8 @@ def auxiliary_list():
                 utility.Msg("Could not load auxiliary module '%s'" % 
                                             auxiliary[1], LOG.DEBUG)
 
-            if not aux.show:
-                utility.Msg("\t%s ([%s] --%s)" % (aux.name,
-                                            '|'.join(aux.versions), aux.flag))
+            utility.Msg("\t%s ([%s] --%s)" % (aux.name,
+                                        '|'.join(aux.versions), aux.flag))
 
 
 def parse_war_path(war, include_war = False):

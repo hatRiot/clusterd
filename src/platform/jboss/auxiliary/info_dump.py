@@ -11,7 +11,6 @@ class Auxiliary:
     def __init__(self):
         self.name = "Dump host information"
         self.versions = ['Any']
-        self.show = True
         self.flag = 'jb-info'
 
     def check(self, fingerprint):

@@ -9,7 +9,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'Dump host information'
         self.versions = ['All']
-        self.show = True
         self.flag = 'ax-info'
 
     def check(self, fingerprint):

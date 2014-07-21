@@ -12,7 +12,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'List deployed services'
         self.versions = ['Any']
-        self.show = True
         self.flag = 'ax-list'
 
     def check(self, fingerprint):

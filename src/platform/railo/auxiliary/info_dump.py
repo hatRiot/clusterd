@@ -10,7 +10,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'Dump host information'
         self.versions = ['3.0', '3.3', '4.0', '4.1', '4.2']
-        self.show = True
         self.flag = 'rl-info'
 
     def check(self, fingerprint):

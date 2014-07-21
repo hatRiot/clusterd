@@ -11,7 +11,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'Dump host information'
         self.versions = ['7.0', '8.0', '9.0', '10.0', '11.0']
-        self.show = True
         self.flag = 'cf-info'
 
     def check(self, fingerprint):

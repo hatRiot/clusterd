@@ -11,7 +11,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'List deployed applications'
         self.versions = ['Any']
-        self.show = True
         self.flag = 'gf-list'
 
     def check(self, fingerprint):

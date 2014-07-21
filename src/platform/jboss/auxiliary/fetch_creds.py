@@ -8,7 +8,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'JBoss Path Traversal (CVE-2005-2006)'
         self.versions = ['3.0', '3.2', '4.0']
-        self.show = False
         self.flag = 'jb-fetch'
 
     def check(self, fingerprint):

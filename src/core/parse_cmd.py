@@ -97,7 +97,8 @@ def parse(arguments):
     other.add_argument("--deployer-list", help="List all available deployers",
                     action='store_true', dest='deploy_list', default=False)
     other.add_argument("--aux-list", help="List all available exploits",
-                    action='store_true', dest='aux_list', default=False)
+                    action='store', dest='aux_list', const='All', nargs='?',
+                    metavar='platform')
     other.add_argument("--gen-payload", help='Generate a reverse shell payload',
                      action='store', dest='generate_payload',
                      metavar='[host:port] for reverse connection')

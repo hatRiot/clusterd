@@ -14,7 +14,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'Gather Tomcat info'
         self.versions = ['Any']
-        self.show = True
         self.flag = 'tc-info'
 
     def check(self, fingerprint):

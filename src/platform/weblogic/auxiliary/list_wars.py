@@ -10,7 +10,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'List deployed apps'
         self.versions = ["10", "12"]
-        self.show = True
         self.flag = 'wl-list'
 
     def check(self, fingerprint):

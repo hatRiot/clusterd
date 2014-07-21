@@ -12,7 +12,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'JBoss Verb Tampering (CVE-2010-0738)'
         self.versions = ["4.0"]
-        self.show = False
         self.flag = 'verb-tamper'
 
     def check(self, fingerprint):

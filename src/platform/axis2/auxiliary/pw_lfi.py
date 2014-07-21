@@ -8,7 +8,6 @@ class Auxiliary:
     def __init__(self):
         self.name = 'Axis2 1.4.1 LFI'
         self.versions = ['1.4']
-        self.show = False
         self.flag = 'ax-lfi'
 
     def check(self, fingerprint):

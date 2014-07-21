@@ -80,10 +80,10 @@ class FingerEngine:
 
         if self.options.remote_service:
             if self.options.remote_service.lower() not in \
-                                            state.supported_platforms:
-                utility.Msg("Service '%s' unknown or not supported." %
-                    self.options.remote_service, LOG.ERROR)
-                return False
+                                           state.supported_platforms:
+               utility.Msg("Service '%s' unknown or not supported." %
+                   self.options.remote_service, LOG.ERROR)
+               return False
 
             self.service = self.options.remote_service
             utility.Msg("Server hinted at '%s'" % self.options.remote_service)
