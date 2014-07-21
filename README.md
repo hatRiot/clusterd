@@ -80,8 +80,8 @@ examples / usage
 ```
 $ ./clusterd.py 
 
-        clusterd/0.3 - clustered attack toolkit
-            [Supporting 6 platforms]
+        clusterd/0.3.1 - clustered attack toolkit
+            [Supporting 7 platforms]
 
 usage: ./clusterd.py [options]
 
@@ -105,7 +105,7 @@ Connection:
 Remote Host:
   Settings specific to the remote host
 
-  -a [jboss|coldfusion|weblogic|tomcat|railo|axis2]
+  -a [jboss|coldfusion|weblogic|tomcat|railo|axis2|glassfish]
                         Hint at remote host service
   -o [windows|linux]    Hint at remote host OS
   -v [version]          Specific version to test
@@ -126,38 +126,12 @@ Deploy:
   -b [user]             Brute force credentials for user [admin]
   --wordlist [path]     Wordlist for brute forcing passwords
 
-jboss modules:
-  --jb-info             Dump host information
-  --jb-list             List deployed WARs
-  --jb-smb              Obtain SMB hash
-
-coldfusion modules:
-  --cf-info             Dump host information
-  --cf-smb              Obtain SMB hash
-
-weblogic modules:
-  --wl-info             Gather WebLogic info
-  --wl-list             List deployed apps
-  --wl-smb              Obtain SMB hash
-
-tomcat modules:
-  --tc-info             Gather Tomcat info
-  --tc-list             List deployed WARs
-  --tc-smb              Obtain SMB hash
-
-railo modules:
-  --rl-info             Dump host information
-  --rl-smb              Obtain SMB hash
-
-axis2 modules:
-  --ax-info             Dump host information
-  --ax-list             List deployed services
-
 Other:
   Miscellaneous flags
 
   --deployer-list       List all available deployers
-  --aux-list            List all available exploits
+  --aux-list [platform]
+                        List all available exploits
   --gen-payload [host:port] for reverse connection
                         Generate a reverse shell payload
   --discover [discovery_file]
