@@ -31,7 +31,7 @@ def prerun(options):
 
     # then check if they want a listing of all deployers
     if options.deploy_list:
-        deploy_utils.deploy_list()
+        deploy_utils.deploy_list(options.deploy_list)
 
     if options.aux_list:
         deploy_utils.auxiliary_list(options.aux_list)

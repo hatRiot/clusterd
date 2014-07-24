@@ -131,13 +131,17 @@ def bsh_deploy(arch, url, version, usr = None, pswd = None):
     return res
 
 
-def deploy_list():
+def deploy_list(usr_platform = None):
     """ Simple function for dumping all deployers for supported
     platforms.  This lists them in the format INTERFACE (name), where
     name is used for matching.
     """
 
     for platform in state.supported_platforms:
+
+        # check for a specified platform
+        if usr_platform != 'All' and usr_platform != platform:
+            continue
 
         utility.Msg("Deployers for '%s'" % platform, LOG.UPDATE)
         load = importlib.import_module('src.platform.%s.deployers' % platform)
@@ -153,7 +157,8 @@ def deploy_list():
             try:
                 dp = deployer[0].find_module(deployer[1]).load_module(deployer[1])
                 if 'Any' in dp.versions: dp.versions.remove("Any") # used for FP only
-                utility.Msg("\t%s (%s [%s])" % (dp.title, deployer[1], '|'.join(dp.versions)))
+                utility.Msg("\t%s (%s [%s])" % (dp.title, deployer[1], 
+                                                '|'.join(dp.versions)))
 
             except Exception, e:
                 utility.Msg(e, LOG.DEBUG)
