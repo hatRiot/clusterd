@@ -3,6 +3,7 @@ from time import sleep
 from commands import getoutput
 from log import LOG
 import utility
+import state
 
 
 def invoke(fingerengine, fingerprint, deployer):
@@ -148,8 +149,8 @@ def _invoke(url):
     cnt = 0
     try:
 
-        # Some servers take a second or two to deploy the application; probe for 10s
-        while cnt < 5:
+        # Some servers take a second or two to deploy the application; probe for state.timeout * 2 
+        while cnt < state.timeout:
 
             response = utility.requests_get(url)
             if response.status_code in [200, 202]:
