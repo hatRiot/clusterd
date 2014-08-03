@@ -37,9 +37,9 @@ clusterd features
     - Credential/path disclosure (CVE-2005-2006)
 
 * ColdFusion
-    - Versions 6 - 11
+    - Versions 5 - 11
     - Currently supported deployers:
-        + Task Scheduler for 7.x, 8.x, 9.x, 10.x, and 11.x
+        + Task Scheduler for 5.x, 6.x, 7.x, 8.x, 9.x, 10.x, and 11.x
         + FCKeditor for 8.x
         + LFI Log Injection 6.x, 7.x, and 8.x
     - Hash retrieval for versions 6 - 10

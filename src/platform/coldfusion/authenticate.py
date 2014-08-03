@@ -27,7 +27,20 @@ def _auth(usr, pswd, url, version):
     """ Authenticate to the remote ColdFusion server; bit of a pain 
     """
 
-    if version in ['7.0', '8.0', '9.0']:
+    if version in ['5.0']:
+        data = {'PasswordProvided_required':'You+must+provide+a+password.',
+                'PasswordProvided' : pswd,
+                'Submit' : 'Password'
+        }
+
+    elif version in ['6.0', '6.1']:
+        data = {
+            'cfadminPassword' : pswd,
+            'requestedURL' : '/CFIDE/administrator/index.cfm',
+            'submit' : 'Login'
+        }
+
+    elif version in ['7.0', '8.0', '9.0']:
         salt = _salt(url) 
         hsh = hmac.new(salt, sha1(pswd).hexdigest().upper(), sha1).hexdigest().upper()
         data = {"cfadminPassword" : hsh,
@@ -48,9 +61,13 @@ def _auth(usr, pswd, url, version):
 
     try:
         res = utility.requests_post(url, data=data)
-        if res.status_code is 200 and len(res.history) > 0:
+        if res.status_code is 200:
+
             utility.Msg("Successfully authenticated with %s:%s" % (usr, pswd), LOG.DEBUG)
-            return (dict_from_cookiejar(res.history[0].cookies), None)
+            if version in ['5.0']:
+                return (dict_from_cookiejar(res.cookies), None)
+            elif len(res.history) > 0:
+                return (dict_from_cookiejar(res.history[0].cookies), None)
 
     except Exception, e:
         utility.Msg("Error authenticating: %s" % e, LOG.ERROR)
@@ -119,6 +136,8 @@ def checkAuth(ip, port, title, version):
     """
 
     url = "http://{0}:{1}/CFIDE/administrator/enter.cfm".format(ip, port)
+    if version in ['5.0']:
+        url = 'http://{0}:{1}/CFIDE/administrator/index.cfm'.format(ip,port)
 
     # check with given auth
     if state.usr_auth:

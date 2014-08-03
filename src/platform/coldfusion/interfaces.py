@@ -30,7 +30,8 @@ class AdminInterface(FingerPrint):
 
             response = utility.requests_get(url)
 
-            if "Version: {0}".format(self.version.replace('.',',')) in response.content:
+            if "Version: {0}".format(self.version.replace('.',',')) \
+                                    in response.content.translate(None, '\r\n'):
                 return True
 
         except exceptions.Timeout:
