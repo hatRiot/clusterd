@@ -63,6 +63,7 @@ clusterd features
     - Currently supported deployers:
         + Task scheduler for 3.x and 4.x
     - Fetch host OS information
+    - Pre-auth Password retrieval for 3.x - 4.2.1
 
 * Axis2
     - Versions 1.4 - 1.6
