@@ -1,5 +1,6 @@
 from src.platform.jboss.authenticate import checkAuth
 from src.platform.jboss.interfaces import JINTERFACES
+from src.module.deploy_utils import parse_war_path
 from collections import OrderedDict
 from log import LOG
 from re import findall
@@ -77,7 +78,7 @@ def manage_undeploy(fingerengine, fingerprint):
     """
 
     context = fingerengine.options.undeploy
-    context = context if not '/' in context else context[1:]
+    context = parse_war_path(context)
 
     url = 'http://{0}:{1}/management'.format(fingerengine.options.ip,
                                              fingerprint.port)

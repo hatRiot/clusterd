@@ -11,7 +11,9 @@ def invoke(fingerengine, fingerprint, deployer):
     """
 
     if fingerengine.service in ["jboss", "tomcat", "weblogic", "glassfish"]:
-        if fingerengine.service == 'glassfish':
+        if fingerengine.service == 'glassfish' or\
+           (fingerengine.service == 'jboss' and\
+           fingerprint.version in ['7.0', '7.1', '8.0', '8.1']):
             # different port; if this has changed from default, we may need
             # to iterate through fingerprints to find the correct one...
             fingerprint.port = 8080
