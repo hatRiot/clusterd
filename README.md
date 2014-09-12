@@ -62,6 +62,8 @@ clusterd features
     - Versions 3.x - 4.x
     - Currently supported deployers:
         + Task scheduler for 3.x and 4.x
+        + Log injection for 3.x and 4.x
+        + Thumbnail pre-auth RCE for 3.x and 4.x (up to 4.2.1)
     - Fetch host OS information
     - Pre-auth Password retrieval for 3.x - 4.2.1
 
@@ -72,6 +74,12 @@ clusterd features
     - Fetch host OS information
     - View deployed services
     - Credential disclosure for 1.4
+
+* Glassfish
+    - Versions 3.x - 4.x
+    - View deployed services
+    - Currently supported deployers:
+        + Admin upload for 3.x and 4.x
 
 * Simple API for adding new platforms, fingerprints, deployers, and exploits
 * Various auxiliary modules for vulnerabilities and exploitation techniques
