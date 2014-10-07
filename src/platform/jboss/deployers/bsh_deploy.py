@@ -3,7 +3,7 @@ from src.platform.jboss.interfaces import JINTERFACES
 from src.module.deploy_utils import bsh_deploy
 from log import LOG
 from base64 import b64encode
-from os import system, path
+from os import remove, path
 import utility
 
 
@@ -48,7 +48,7 @@ def deploy(fingerengine, fingerprint):
                               fingerprint.version.split('.')[0]) 
 
     # remove the copied bsh
-    system("rm ./src/lib/jboss/bsh_deploy/bshdeploy.bsh")
+    remove("./src/lib/jboss/bsh_deploy/bshdeploy.bsh")
 
     if response:
         if type(response) is str and response != '':

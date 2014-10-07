@@ -6,7 +6,7 @@ from log import LOG
 from threading import Thread
 from re import findall
 from time import sleep
-from os import system
+from shutil import copyfile
 import state
 import utility
 
@@ -29,7 +29,7 @@ def deploy(fingerengine, fingerprint):
     if fingerprint.version in ["10.0", '11.0']:
         # we need the file to end with .log
         tmp = cfm_file.split('.')[0]
-        system("cp %s %s/%s.log" % (cfm_path, state.serve_dir, tmp))
+        copyfile(cfm_path, "%s/%s.log" % (state.serve_dir, tmp))
         cfm_file = "%s.log" % tmp 
         cfm_path = "%s/%s" % (state.serve_dir, cfm_file)
 
@@ -196,7 +196,7 @@ def fetch_webroot(ip, fingerprint):
 
     url = "http://{0}:{1}/CFIDE/administrator/reports/index.cfm"\
                                         .format(ip, fingerprint.port)
-
+        
     cookies = checkAuth(ip, fingerprint.port, title, fingerprint.version)
     if cookies:
         req = utility.requests_get(url, cookies=cookies[0])
@@ -205,7 +205,7 @@ def fetch_webroot(ip, fingerprint):
         return False
 
     if req.status_code is 200:
-        
+
         root_regex = "CFIDE &nbsp;</td><td scope=row class=\"cellRightAndBottomBlueSide\">(.*?)</td>"
         if fingerprint.version in ["7.0"]:
             root_regex = root_regex.replace("scope=row ", "")

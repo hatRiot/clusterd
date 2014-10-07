@@ -1,7 +1,8 @@
 from src.module.invoke_payload import invoke
-from os import system, path
+from os import path
 from random import choice
 from log import LOG
+from shutil import copyfile
 import string
 import state
 import utility
@@ -32,8 +33,8 @@ def run(fingerengine):
         rand = '%s/%s.%s' % (state.serve_dir, 
               ''.join(choice(string.ascii_lowercase+string.digits) for x in range(5)),
               payload.split('.',1)[1])
-        system("cp %s %s 2>/dev/null" % (payload, rand))
 
+        copyfile(payload, rand)
         fingerengine.options.deploy = rand
 
 

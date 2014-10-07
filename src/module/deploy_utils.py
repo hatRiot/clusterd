@@ -3,8 +3,9 @@ from time import sleep
 from subprocess import Popen, PIPE, check_output,STDOUT
 from requests import get
 from signal import SIGINT
-from os import kill, system
+from os import kill, remove
 from sys import stdout
+from shutil import copy
 from log import LOG
 import importlib
 import pkgutil
@@ -23,7 +24,10 @@ def _serve(war_file = None):
 
     try:
         if war_file:
-            system("cp %s %s 2>/dev/null" % (war_file, state.serve_dir))
+            try:
+                # rand payloads will already be moved, catch those errors
+                copy(war_file, state.serve_dir)
+            except: pass
 
         proc = Popen(["python", "-m", "SimpleHTTPServer", str(state.external_port)],
                         stdout=PIPE, stderr=PIPE, cwd=state.serve_dir)
@@ -42,7 +46,7 @@ def _serve(war_file = None):
     if war_file:
         war_name = war_file.rsplit('/', 1)[1]
         # remove our copied file
-        system("rm -f %s/%s" % (war_name, state.serve_dir))
+        remove("%s/%s" % (state.serve_dir, war_name))
 
 
 def waitServe(servert):
