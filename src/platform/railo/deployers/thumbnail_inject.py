@@ -2,12 +2,12 @@ from src.platform.railo.interfaces import RINTERFACES
 from src.module.deploy_utils import _serve, waitServe, parse_war_path, killServe
 from hashlib import md5
 from commands import getoutput
+from shutil import copyfile
 from threading import Thread
 from base64 import b64encode
 from os.path import abspath
 from requests import get
 from time import sleep
-from os import system
 from log import LOG
 from random import randint
 import utility
@@ -102,7 +102,7 @@ def load_file(url, payload_file, os, version):
              " file='{1}'>".format(b64, payload_file)
     
     # set our stager
-    system("cp ./src/lib/railo/header.png {0}/{1}".format(state.serve_dir, pl_file))
+    copyfile("./src/lib/railo/header.png", "{0}/{1}".format(state.serve_dir, pl_file))
     with open("{0}/{1}".format(state.serve_dir, pl_file), "ab") as f:
         f.write(stager + '\x00')
 

@@ -8,7 +8,7 @@ from time import sleep
 from os.path import abspath
 from threading import Thread
 from urllib import quote
-from os import system
+from shutil import copyfile
 import state
 import utility
 
@@ -65,8 +65,8 @@ def deploy(fingerengine, fingerprint):
         return
 
     utility.Msg("Stager deployed, invoking...", LOG.SUCCESS)
-
-    system("cp {0} {1}/{2}".format(payload_path, state.serve_dir, payload))
+    
+    copyfile(payload_path, "{0}/{1}".format(state.serve_dir, payload))
     server_thread = Thread(target=_serve, args=("%s/%s" % (state.serve_dir, payload),))
     server_thread.start()
     sleep(2)
