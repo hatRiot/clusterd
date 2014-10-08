@@ -31,7 +31,7 @@ class Auxiliary:
         deploy function.
         """
 
-        if getuid() > 0:
+        if not utility.check_admin(): 
             utility.Msg("Root privs required for this module.", LOG.ERROR)
             return
 

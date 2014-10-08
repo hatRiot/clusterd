@@ -23,23 +23,23 @@ def Msg(string, level=LOG.INFO):
     if state.platform == 'linux':
        
         if level is LOG.INFO:
-            print "%s%s%s" % ("\033[32m", output, "\033[0m")
+            output = "%s%s%s" % ("\033[32m", output, "\033[0m")
         elif level is LOG.SUCCESS:
-            print "%s%s%s" % ("\033[1;32m", output, "\033[0m")
+            output = "%s%s%s" % ("\033[1;32m", output, "\033[0m")
         elif level is LOG.ERROR:
-            print "%s%s%s" % ("\033[31m", output, "\033[0m")
+            output = "%s%s%s" % ("\033[31m", output, "\033[0m")
         elif level is LOG.DEBUG:
             if state.isdebug:
-                print "%s%s%s" % ("\033[32m", output, "\033[0m")
+                output = "%s%s%s" % ("\033[34m", output, "\033[0m")
+            else:
+                output = None
         elif level is LOG.UPDATE:
-            print "%s%s%s" % ("\033[33m", output, "\033[0m")
-
-    else:
-        print output
+            output = "%s%s%s" % ("\033[33m", output, "\033[0m")
 
     if level is LOG.DEBUG and not state.isdebug:
         return
 
+    if output: print output
     log(string)
 
 
@@ -100,6 +100,22 @@ def local_address():
         Msg("Unable to find adapter %s" % state.listener, LOG.ERROR)
 
     return adapter
+
+
+def check_admin():
+    """ Check whether the running user has sufficient
+    privileges to execute "privileged" actions; this equates to
+    root on linux and administrator on windows
+    """
+
+    isAdmin = False
+    import ctypes, os
+    try:
+        isAdmin = os.getuid() == 0
+    except AttributeError:
+        isAdmin = ctypes.windll.shell32.IsUserAnAdmin() != 0
+
+    return isAdmin
 
 
 def build_request(args, kwargs):

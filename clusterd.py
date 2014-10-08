@@ -105,16 +105,17 @@ def run(options):
         auxengine(fingerengine)
 
 if __name__ == "__main__":
+
     utility.header()
     options = parse(sys.argv[1:])
+
+    # set platform
+    state.platform = platform.system().lower()
 
     utility.Msg("Started at %s" % (utility.timestamp()))
 
     # log the CLI args
     utility.log(' '.join(sys.argv))
-
-    # set platform
-    state.platform = platform.system().lower()
 
     try:
         prerun(options)

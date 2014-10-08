@@ -5,7 +5,6 @@ from collections import OrderedDict
 from threading import Thread
 from log import LOG
 from auxiliary import Auxiliary
-from os import getuid
 from time import sleep
 import socket
 import utility
@@ -35,7 +34,7 @@ class Auxiliary:
         Thanks to @cd1zz for the idea for this
         """
 
-        if getuid() > 0:
+        if not utility.check_admin():
             utility.Msg("Root privs required for this module.", LOG.ERROR)
             return
 

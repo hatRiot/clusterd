@@ -4,7 +4,6 @@ from src.lib.cifstrap import Handler
 from auxiliary import Auxiliary
 from threading import Thread
 from time import sleep
-from os import getuid
 from log import LOG
 import socket
 import utility
@@ -31,7 +30,7 @@ class Auxiliary:
         datasource
         """
 
-        if getuid() > 0:
+        if not utility.check_admin():
             utility.Msg("Root privs required for this module.", LOG.ERROR)
             return
 

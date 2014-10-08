@@ -6,7 +6,6 @@ from threading import Thread
 from log import LOG
 from re import findall
 from time import sleep
-from os import getuid
 import socket
 import utility
 import state
@@ -29,7 +28,7 @@ class Auxiliary:
         """ Same as JBoss/Tomcat
         """
 
-        if getuid() > 0:
+        if not utility.check_admin(): 
             utility.Msg("Root privs required for this module.", LOG.ERROR)
             return
 
