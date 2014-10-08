@@ -15,19 +15,27 @@ def Msg(string, level=LOG.INFO):
             ERROR - An error of some sort has occured
             DEBUG - Debugging output
             UPDATE - Status updates, i.e. host fingerprinting completed
+
+    Currently we only support color output on Linux systems.
     """
 
-    if level is LOG.INFO:
-        print '\033[32m [%s] %s\033[0m' % (timestamp(), string)
-    elif level is LOG.SUCCESS:
-        print '\033[1;32m [%s] %s\033[0m' % (timestamp(), string)
-    elif level is LOG.ERROR:
-        print '\033[31m [%s] %s\033[0m' % (timestamp(), string)
-    elif level is LOG.DEBUG:
-        if state.isdebug:
-            print '\033[34m [%s] %s\033[0m' % (timestamp(), string)
-    elif level is LOG.UPDATE:
-        print '\033[33m [%s] %s\033[0m' % (timestamp(), string)
+    output = "[%s] %s" % (timestamp(), string)
+    if state.platform == 'linux':
+       
+        if level is LOG.INFO:
+            print "%s%s%s" % ("\033[32m", output, "\033[0m")
+        elif level is LOG.SUCCESS:
+            print "%s%s%s" % ("\033[1;32m", output, "\033[0m")
+        elif level is LOG.ERROR:
+            print "%s%s%s" % ("\033[31m", output, "\033[0m")
+        elif level is LOG.DEBUG:
+            if state.isdebug:
+                print "%s%s%s" % ("\033[32m", output, "\033[0m")
+        elif level is LOG.UPDATE:
+            print "%s%s%s" % ("\033[33m", output, "\033[0m")
+
+    else:
+        print output
 
     if level is LOG.DEBUG and not state.isdebug:
         return
@@ -185,7 +193,7 @@ def capture_input(output_string):
     try:
         tmp = raw_input(' \033[1;37m[%s] %s > \033[0m' % (timestamp(), output_string))
     except KeyboardInterrupt:
-        return None
+        return ''
     return tmp
 
 

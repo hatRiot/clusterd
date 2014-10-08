@@ -10,6 +10,7 @@ from src.module import generate_payload, deploy_utils, discovery
 from auxengine import auxengine
 from parse_cmd import parse
 from log import LOG
+import platform
 import utility
 import state
 
@@ -111,6 +112,9 @@ if __name__ == "__main__":
 
     # log the CLI args
     utility.log(' '.join(sys.argv))
+
+    # set platform
+    state.platform = platform.system().lower()
 
     try:
         prerun(options)

@@ -55,3 +55,8 @@ listener = None
 # some modules require the remote server to come back and grab a file.
 # This variable will determine what port it makes the connection back to
 external_port = 8000
+
+# current platform; tested/supported are:
+#   linux
+#   windows
+platform = "linux"
