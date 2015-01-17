@@ -59,6 +59,9 @@ def parse(arguments):
     remote.add_argument("--arch", help='Specify remote OS architecture',
                     action='store', dest='arch', default='x86',
                     metavar='[x86|x64]')
+    remote.add_argument("--delay", help='Delay N seconds between each attempt',
+                    action='store', dest='delay', default=None,
+                    metavar='[seconds]')
 
     #
     # deploy options

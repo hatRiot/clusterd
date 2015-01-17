@@ -39,8 +39,7 @@ def auxengine(fingerengine):
 
             if mod.name not in found and mod.check(fingerprint):
                 if fingerengine.options.fp:
-                    utility.Msg("Vulnerable to %s (--%s)" % (mod.name, mod.flag),
-                                                            LOG.SUCCESS)
+                    utility.Msg("  %s (--%s)" % (mod.name, mod.flag), LOG.UPDATE)
                 elif vars(fingerengine.options)[mod.flag]:
                     try:
                         mod.run(fingerengine, fingerprint)

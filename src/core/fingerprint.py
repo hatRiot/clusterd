@@ -1,4 +1,5 @@
 from os.path import abspath
+from time import sleep
 from log import LOG
 import pkgutil
 import state
@@ -48,6 +49,9 @@ class FingerEngine:
                     match_fps.append(fp)
             except Exception, e:
                 utility.Msg("Exception with fingerprint: %s" % e, LOG.DEBUG)
+        
+            if self.options.delay:
+                sleep(int(self.options.delay))
 
         return match_fps
 
