@@ -24,7 +24,7 @@ class Auxiliary:
 
         return False
 
-    def run(fingerengine, fingerprint):
+    def run(self, fingerengine, fingerprint):
         """ This module exploits CVE-2010-0738, which bypasses authentication
         by submitting requests with different HTTP verbs, such as HEAD. 
         """
