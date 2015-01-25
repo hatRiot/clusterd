@@ -88,7 +88,7 @@ def build_platform_flags(platform, egroup):
         if not 'flag' in dir(mod):
             continue
 
-        if 'enable_args' in dir(mod):
+        if 'enable_args' in dir(mod) and mod.enable_args:
             egroup.add_argument("--%s" % mod.flag, action='store', help=SUPPRESS)
         else:
             egroup.add_argument("--%s" % mod.flag, action='store_true', dest=mod.flag,
