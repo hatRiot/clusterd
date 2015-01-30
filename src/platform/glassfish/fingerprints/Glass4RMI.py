@@ -1,6 +1,7 @@
 from src.platform.glassfish.interfaces import GINTERFACES
 from requests import exceptions
 from cprint import FingerPrint
+from log import LOG
 import utility
 
 class FPrint(FingerPrint):
