@@ -39,11 +39,13 @@ class Auxiliary:
             uri = '/CFIDE/administrator/settings/version.cfm'
 
         cookies = checkAuth(fingerengine.options.ip, fingerprint.port,
-                            fingerprint.title, fingerprint.version)[0]
+                            fingerprint.title, fingerprint.version)
         if not cookies:
             utility.Msg("Could not get auth for %s:%s" %
                         (fingerengine.options.ip, fingerprint.port), LOG.ERROR)
             return
+        else:
+            cookies = cookies[0]
 
         try:
             response = utility.requests_get(base + uri, cookies=cookies)
@@ -56,7 +58,7 @@ class Auxiliary:
             regex = self.versionRegex(fingerprint.version)
             types = findall(regex[0], response.content.translate(None, "\n\t\r"))
             data = findall(regex[1], response.content.translate(None, "\n\t\r"))
- 
+
             # pad
             if fingerprint.version in ["8.0", "9.0", "10.0", '11.0']:
                 types.insert(0, "Version")

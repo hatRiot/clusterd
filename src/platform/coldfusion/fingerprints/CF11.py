@@ -9,4 +9,4 @@ class FPrint(FingerPrint):
         self.title = CINTERFACES.CFM
         self.uri = "/CFIDE/administrator/images/loginbackground.jpg"
         self.port = 80
-        self.hash = "9d11ede6e4ca9f1bf57b856c0df82ee6"
+        self.hash = "457c6f1f26d8a030a9301e975663589d"
