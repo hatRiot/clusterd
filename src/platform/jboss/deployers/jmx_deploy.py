@@ -1,6 +1,6 @@
 from src.platform.jboss.interfaces import JINTERFACES
 from src.platform.jboss.authenticate import checkAuth
-from src.module.deploy_utils import _serve, waitServe, killServe
+from src.module.deploy_utils import _serve, waitServe, killServe, parse_war_path
 from collections import OrderedDict
 from threading import Thread
 from requests import get, exceptions
@@ -18,7 +18,7 @@ def deploy(fingerengine, fingerprint):
     """
 
     war_file = abspath(fingerengine.options.deploy)
-    war_name = war_file.rsplit('/', 1)[1] 
+    war_name = parse_war_path(war_file, True)
     
     # start up the local HTTP server
     server_thread = Thread(target=_serve, args=(war_file,))

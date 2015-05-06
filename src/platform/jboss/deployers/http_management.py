@@ -18,7 +18,7 @@ def deploy(fingerengine, fingerprint):
 
     war_file = abspath(fingerengine.options.deploy)
     war_name = parse_war_path(war_file)
-    war_raw = war_file.rsplit('/', 1)[1]
+    war_raw = parse_war_path(war_file, True)
     utility.Msg("Preparing to deploy {0}...".format(war_file))
 
     base = "http://{0}:{1}/management".format(fingerengine.options.ip,

@@ -10,6 +10,9 @@ def invoke(fingerengine, fingerprint, deployer):
     """
     """
 
+    if fingerengine.invoke_url:
+        return _invoke(fingerengine.invoke_url)
+
     if fingerengine.service in ["jboss", "tomcat", "weblogic", "glassfish"]:
         if fingerengine.service == 'glassfish' or\
            (fingerengine.service == 'jboss' and\

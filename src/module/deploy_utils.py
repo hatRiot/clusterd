@@ -44,7 +44,7 @@ def _serve(war_file = None):
         kill(proc.pid, SIGINT)
 
     if war_file:
-        war_name = war_file.rsplit('/', 1)[1]
+        war_name = parse_war_path(war_file, True)
         # remove our copied file
         remove("%s/%s" % (state.serve_dir, war_name))
 
