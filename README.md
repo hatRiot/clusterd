@@ -31,6 +31,7 @@ clusterd features
         + /invoker/JMXInvokerServlet for 3.x, 4.x, and 5.x
         + /invoker/EJBInvokerServlet for 3.x, 4.x, and 5.x
         + /management for 7.x, 8.x
+        + SEAM2 for 5.1, 6.x
     - Dump deployed WARs 
     - Fetch host OS information
     - Verb tampering vulnerability (CVE-2010-0738)
