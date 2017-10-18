@@ -92,9 +92,9 @@ def local_address():
         ifconfig = ifconfig.split("\n")
         for idx in xrange(len(ifconfig)):
             if state.listener in ifconfig[idx]:
-                adapter = ifconfig[idx+1].split()[1][5:]
+                adapter = ifconfig[idx+1].split()[1] # removed '[5:]' as it was stripping off the first two octets
     else:
-        adapter = ifconfig.split("\n")[1].split()[1][5:]
+        adapter = ifconfig.split("\n")[1].split()[1] # removed '[5:]' as it was stripping off the first two octets
 
     if not adapter:
         Msg("Unable to find adapter %s" % state.listener, LOG.ERROR)
